@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="D:\project\teaching\SuperWeChat\Day01\superwechat\libs\picasso-2.4.0.jar"
+        jumboMode="true"
+        revision="23.0.2"
+        sha1="f36d2d4e3a36b3259aaf9d004d29b4cdc6c1bfb2">
+        <dex dex="D:\project\teaching\SuperWeChat\Day01\superwechat\build\intermediates\pre-dexed\debug\picasso-2.4.0_92c3d5c83638ab832fb11c6789227d772ac8ed10.jar" />
+    </item>
+    <item
+        jar="D:\project\teaching\SuperWeChat\Day01\superwechat\libs\Parse-1.9.4.jar"
+        jumboMode="true"
+        revision="23.0.2"
+        sha1="56c22930b5d4f77015b6a40c7f14103d3e101001">
+        <dex dex="D:\project\teaching\SuperWeChat\Day01\superwechat\build\intermediates\pre-dexed\debug\Parse-1.9.4_edbfca5f410f1badbe034f1444863a74e311f84b.jar" />
+    </item>
+    <item
+        jar="D:\project\teaching\SuperWeChat\Day01\superwechat\libs\umeng-analytics-v5.2.4.jar"
+        jumboMode="true"
+        revision="23.0.2"
+        sha1="0f9eccf79ae6006e4346725b09114182dca0c023">
+        <dex dex="D:\project\teaching\SuperWeChat\Day01\superwechat\build\intermediates\pre-dexed\debug\umeng-analytics-v5.2.4_76b1201884075f4b29f306d4ed3489cec4e79ad4.jar" />
+    </item>
+    <item
+        jar="D:\project\teaching\SuperWeChat\Day01\superwechat\libs\MiPush_SDK_Client_2_2_19.jar"
+        jumboMode="true"
+        revision="23.0.2"
+        sha1="01298c1280e97b7367a55252f66a8f19fd494d35">
+        <dex dex="D:\project\teaching\SuperWeChat\Day01\superwechat\build\intermediates\pre-dexed\debug\MiPush_SDK_Client_2_2_19_7ad6a129c6746f82f4dd3bf839f084a2755b63dc.jar" />
+    </item>
+    <item
+        jar="D:\project\teaching\SuperWeChat\Day01\superwechat\build\intermediates\incremental-runtime-classes\debug\instant-run.jar"
+        jumboMode="true"
+        revision="23.0.2"
+        sha1="275cc52b33ef54d060370f6e8645830f73d34b4a">
+        <dex dex="D:\project\teaching\SuperWeChat\Day01\superwechat\build\intermediates\pre-dexed\debug\instant-run_e2446e8ec0081e0841b96b503d18ae44206a151b.jar" />
+    </item>
+    <item
+        jar="D:\project\teaching\SuperWeChat\Day01\superwechat\libs\jackson-core-asl-1.9.11.jar"
+        jumboMode="true"
+        revision="23.0.2"
+        sha1="e32303ef8bd18a5c9272780d49b81c95e05ddf43">
+        <dex dex="D:\project\teaching\SuperWeChat\Day01\superwechat\build\intermediates\pre-dexed\debug\jackson-core-asl-1.9.11_ddf248c1d64e89c816247c9034899f1e819ba076.jar" />
+    </item>
+    <item
+        jar="D:\project\teaching\SuperWeChat\Day01\superwechat\libs\org.apache.http.legacy.jar"
+        jumboMode="true"
+        revision="23.0.2"
+        sha1="fa331331b626ee78c52bea16ce1e34b39e666ce5">
+        <dex dex="D:\project\teaching\SuperWeChat\Day01\superwechat\build\intermediates\pre-dexed\debug\org.apache.http.legacy_7779613578cecf1aef827ff59717ac62e30c5e8c.jar" />
+    </item>
+    <item
+        jar="D:\project\teaching\SuperWeChat\Day01\superwechat\libs\easemobchat_2.2.7.jar"
+        jumboMode="true"
+        revision="23.0.2"
+        sha1="e407c53d6f529aa180386e42e29aa877ce20ccdc">
+        <dex dex="D:\project\teaching\SuperWeChat\Day01\superwechat\build\intermediates\pre-dexed\debug\easemobchat_2.2.7_d4c7e91f4ad36163cafad459bdf69fbf37088bfa.jar" />
+    </item>
+    <item
+        jar="D:\project\teaching\SuperWeChat\Day01\superwechat\libs\bolts-android-1.2.0.jar"
+        jumboMode="true"
+        revision="23.0.2"
+        sha1="6ee2953ccf51ce72b6d548c30c4633b99eb4f9dd">
+        <dex dex="D:\project\teaching\SuperWeChat\Day01\superwechat\build\intermediates\pre-dexed\debug\bolts-android-1.2.0_8dff79b802fdadaa3f33ae8eb461dc55f86f5c26.jar" />
+    </item>
+    <item
+        jar="D:\project\teaching\SuperWeChat\Day01\superwechat\libs\jackson-mapper-asl-1.9.11.jar"
+        jumboMode="true"
+        revision="23.0.2"
+        sha1="45d70862fa016993193075a1e8e32a01dcf438e8">
+        <dex dex="D:\project\teaching\SuperWeChat\Day01\superwechat\build\intermediates\pre-dexed\debug\jackson-mapper-asl-1.9.11_a4fbfedd2b5e25117a9cf99ef4ec04b7863beff5.jar" />
+    </item>
+    <item
+        jar="D:\project\teaching\SuperWeChat\Day01\superwechat\libs\android-support-v4.jar"
+        jumboMode="true"
+        revision="23.0.2"
+        sha1="b6c138ba72ce38beda559df33d369856854fd6f5">
+        <dex dex="D:\project\teaching\SuperWeChat\Day01\superwechat\build\intermediates\pre-dexed\debug\android-support-v4_b81e48e68379df7b8d030509c8b48c48a0ef1eb3.jar" />
+    </item>
+    <item
+        jar="D:\project\teaching\SuperWeChat\Day01\superwechat\libs\gson-2.2.4.jar"
+        jumboMode="true"
+        revision="23.0.2"
+        sha1="973e832af433b44c3ed11c426f2f390b29f3f3f8">
+        <dex dex="D:\project\teaching\SuperWeChat\Day01\superwechat\build\intermediates\pre-dexed\debug\gson-2.2.4_59597e13a918b75baff1fb06ebfe391228453977.jar" />
+    </item>
+    <item
+        jar="D:\project\teaching\SuperWeChat\Day01\superwechat\libs\baidumapapi_v3_2_0.jar"
+        jumboMode="true"
+        revision="23.0.2"
+        sha1="46ca4c3c74e1ddc60b45c490485e5df05babe6a5">
+        <dex dex="D:\project\teaching\SuperWeChat\Day01\superwechat\build\intermediates\pre-dexed\debug\baidumapapi_v3_2_0_6bb106a609566d404db3da84bb78c8617c4c3baf.jar" />
+    </item>
+    <item
+        jar="D:\project\teaching\SuperWeChat\Day01\superwechat\libs\volley.jar"
+        jumboMode="true"
+        revision="23.0.2"
+        sha1="4a94601db9bdfb7dc60efabb3dea91a0675f591d">
+        <dex dex="D:\project\teaching\SuperWeChat\Day01\superwechat\build\intermediates\pre-dexed\debug\volley_fc6debae51393bbdcd8fd84234c262d446a5f7ff.jar" />
+    </item>
+    <item
+        jar="D:\project\teaching\SuperWeChat\Day01\superwechat\libs\locSDK_3.3.jar"
+        jumboMode="true"
+        revision="23.0.2"
+        sha1="590d32bdf5bb37ee372a21696b8f7853b224e31f">
+        <dex dex="D:\project\teaching\SuperWeChat\Day01\superwechat\build\intermediates\pre-dexed\debug\locSDK_3.3_7509528cf065becdc947404c6c3129578fcaddca.jar" />
+    </item>
+    <item
+        jar="D:\project\teaching\SuperWeChat\Day01\superwechat\libs\google-play-services.jar"
+        jumboMode="true"
+        revision="23.0.2"
+        sha1="f0d8e4a84fad131bc291c3c4850afcaa8ba0b299">
+        <dex dex="D:\project\teaching\SuperWeChat\Day01\superwechat\build\intermediates\pre-dexed\debug\google-play-services_1d4654b1dd7279b622308c0529dc4563204f6914.jar" />
+    </item>
+    <item
+        jar="D:\project\teaching\SuperWeChat\Day01\superwechat\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
+        jumboMode="true"
+        revision="23.0.2"
+        sha1="b62bf7db4f03600c614a65aff8450cb2c287150c">
+        <dex dex="D:\project\teaching\SuperWeChat\Day01\superwechat\build\intermediates\pre-dexed\debug\instant-run-bootstrap_56d028b64610d9271c56ca68250585f5101bac71.jar" />
+    </item>
+
+</items>
