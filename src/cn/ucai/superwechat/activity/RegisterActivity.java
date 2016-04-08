@@ -101,7 +101,7 @@ public class RegisterActivity extends BaseActivity {
 	}
 
 	private void setRegisterClickListener() {
-		findViewById(R.id.btnLogin).setOnClickListener(new View.OnClickListener() {
+		findViewById(R.id.btnRegister).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				username = userNameEditText.getText().toString().trim();
