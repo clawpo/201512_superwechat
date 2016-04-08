@@ -68,6 +68,14 @@ public class UserUtils {
         Log.e(TAG,"setUserBeanAvatar,user = "+user);
         setUserAvatar(user,imageView);
     }
+
+    /**
+     * 设置用户头像
+     */
+    public static void setUserBeanAvatar(UserBean user, NetworkImageView imageView){
+        Log.e(TAG,"setUserBeanAvatar,user = "+user);
+        setUserAvatar(user,imageView);
+    }
     
     /**
      * 设置当前用户头像
@@ -119,6 +127,17 @@ public class UserUtils {
             textView.setText(user.getNick());
         }else{
             textView.setText(username);
+        }
+    }
+
+    /**
+     * 设置用户昵称
+     */
+    public static void setUserBeanNickNF(UserBean user,TextView textView){
+        if(user != null && user.getAvatar()!=null){
+            textView.setText(user.getNick());
+        }else{
+            textView.setText(user.getUserName());
         }
     }
     

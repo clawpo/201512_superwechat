@@ -14,6 +14,7 @@
 package cn.ucai.superwechat.activity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -21,31 +22,46 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import cn.ucai.superwechat.applib.controller.HXSDKHelper;
+import com.android.volley.Response;
+import com.android.volley.toolbox.NetworkImageView;
 import com.easemob.chat.EMContactManager;
-import cn.ucai.superwechat.SuperWeChatApplication;
+
+import java.util.ArrayList;
+
 import cn.ucai.superwechat.DemoHXSDKHelper;
+import cn.ucai.superwechat.I;
 import cn.ucai.superwechat.R;
+import cn.ucai.superwechat.SuperWeChatApplication;
+import cn.ucai.superwechat.applib.controller.HXSDKHelper;
+import cn.ucai.superwechat.bean.UserBean;
+import cn.ucai.superwechat.data.ApiParams;
+import cn.ucai.superwechat.data.GsonRequest;
+import cn.ucai.superwechat.utils.UserUtils;
 
 public class AddContactActivity extends BaseActivity{
 	private EditText editText;
 	private LinearLayout searchedUserLayout;
 	private TextView nameText,mTextView;
 	private Button searchBtn;
-	private ImageView avatar;
+	private NetworkImageView avatar;
 	private InputMethodManager inputMethodManager;
 	private String toAddUsername;
 	private ProgressDialog progressDialog;
+
+	private Button mbtnAdd;
+	private Button mbtnSearch;
+    private TextView mtvNothing;
+    Context mContext;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_add_contact);
+        mContext = this;
 		mTextView = (TextView) findViewById(R.id.add_list_friends);
 		
 		editText = (EditText) findViewById(R.id.edit_note);
@@ -56,89 +72,137 @@ public class AddContactActivity extends BaseActivity{
 		searchedUserLayout = (LinearLayout) findViewById(R.id.ll_user);
 		nameText = (TextView) findViewById(R.id.name);
 		searchBtn = (Button) findViewById(R.id.search);
-		avatar = (ImageView) findViewById(R.id.avatar);
+		avatar = (NetworkImageView) findViewById(R.id.avatar);
+		mbtnAdd = (Button) findViewById(R.id.indicator);
+		mbtnSearch = (Button) findViewById(R.id.search);
+        mtvNothing = (TextView) findViewById(R.id.tv_show_nothing);
 		inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+
+		setListener();
 	}
-	
-	
+
+	private void setListener() {
+		setSearchContactListener();
+        setAddContactListener();
+	}
+
+
 	/**
 	 * 查找contact
-	 * @param v
 	 */
-	public void searchContact(View v) {
-		final String name = editText.getText().toString();
-		String saveText = searchBtn.getText().toString();
-		
-		if (getString(R.string.button_search).equals(saveText)) {
-			toAddUsername = name;
-			if(TextUtils.isEmpty(name)) {
-				String st = getResources().getString(R.string.Please_enter_a_username);
-				startActivity(new Intent(this, AlertDialog.class).putExtra("msg", st));
-				return;
-			}
-			
-			// TODO 从服务器获取此contact,如果不存在提示不存在此用户
-			
-			//服务器存在此用户，显示此用户和添加按钮
-			searchedUserLayout.setVisibility(View.VISIBLE);
-			nameText.setText(toAddUsername);
-			
-		} 
-	}	
-	
-	/**
+	public void setSearchContactListener() {
+        searchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                final String name = editText.getText().toString();
+                String saveText = searchBtn.getText().toString();
+                if(TextUtils.isEmpty(name)) {
+                    String st = getResources().getString(R.string.Please_enter_a_username);
+                    startActivity(new Intent(mContext, AlertDialog.class).putExtra("msg", st));
+                    return;
+                }
+                if(SuperWeChatApplication.getInstance().getUserName().equals(name)){
+                    String str = getString(R.string.not_add_myself);
+                    startActivity(new Intent(mContext, AlertDialog.class).putExtra("msg", str));
+                    return;
+                }
+
+                try {
+                    String path = new ApiParams()
+                            .with(I.User.USER_NAME, name)
+                            .getRequestUrl(I.REQUEST_FIND_USER);
+                    executeRequest(new GsonRequest<UserBean>(path,UserBean.class,
+                    responeListener(),errorListener()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
+	}
+
+    private Response.Listener<UserBean> responeListener() {
+        return new Response.Listener<UserBean>() {
+            @Override
+            public void onResponse(UserBean userBean) {
+                if(userBean !=null){
+                    mtvNothing.setVisibility(View.GONE);
+                    ArrayList<UserBean> users = SuperWeChatApplication.getInstance().getContactList();
+                    if(users.contains(userBean)){
+                        Intent intent = new Intent();
+                        intent.setClass(mContext, UserProfileActivity.class);
+                        intent.putExtra("username", userBean.getUserName());
+                        mContext.startActivity(intent);
+                    }else{
+                        //服务器存在此用户，显示此用户和添加按钮
+                        searchedUserLayout.setVisibility(View.VISIBLE);
+                        UserUtils.setUserBeanAvatar(userBean,avatar);
+                        UserUtils.setUserBeanNickNF(userBean,nameText);
+                    }
+                }else{
+                    mtvNothing.setVisibility(View.VISIBLE);
+                }
+            }
+        };
+    }
+
+
+    /**
 	 *  添加contact
-	 * @param view
 	 */
-	public void addContact(View view){
-		if(SuperWeChatApplication.getInstance().getUserName().equals(nameText.getText().toString())){
-			String str = getString(R.string.not_add_myself);
-			startActivity(new Intent(this, AlertDialog.class).putExtra("msg", str));
-			return;
-		}
-		
-		if(((DemoHXSDKHelper) HXSDKHelper.getInstance()).getContactList().containsKey(nameText.getText().toString())){
-		    //提示已在好友列表中，无需添加
-		    if(EMContactManager.getInstance().getBlackListUsernames().contains(nameText.getText().toString())){
-		        startActivity(new Intent(this, AlertDialog.class).putExtra("msg", "此用户已是你好友(被拉黑状态)，从黑名单列表中移出即可"));
-		        return;
-		    }
-			String strin = getString(R.string.This_user_is_already_your_friend);
-			startActivity(new Intent(this, AlertDialog.class).putExtra("msg", strin));
-			return;
-		}
-		
-		progressDialog = new ProgressDialog(this);
-		String stri = getResources().getString(R.string.Is_sending_a_request);
-		progressDialog.setMessage(stri);
-		progressDialog.setCanceledOnTouchOutside(false);
-		progressDialog.show();
-		
-		new Thread(new Runnable() {
-			public void run() {
-				
-				try {
-					//demo写死了个reason，实际应该让用户手动填入
-					String s = getResources().getString(R.string.Add_a_friend);
-					EMContactManager.getInstance().addContact(toAddUsername, s);
-					runOnUiThread(new Runnable() {
-						public void run() {
-							progressDialog.dismiss();
-							String s1 = getResources().getString(R.string.send_successful);
-							Toast.makeText(getApplicationContext(), s1, 1).show();
-						}
-					});
-				} catch (final Exception e) {
-					runOnUiThread(new Runnable() {
-						public void run() {
-							progressDialog.dismiss();
-							String s2 = getResources().getString(R.string.Request_add_buddy_failure);
-							Toast.makeText(getApplicationContext(), s2 + e.getMessage(), 1).show();
-						}
-					});
-				}
-			}
-		}).start();
+	public void setAddContactListener(){
+        mbtnAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                if(((DemoHXSDKHelper) HXSDKHelper.getInstance()).getContactList().containsKey(nameText.getText().toString())){
+                    //提示已在好友列表中，无需添加
+                    if(EMContactManager.getInstance().getBlackListUsernames().contains(nameText.getText().toString())){
+                        startActivity(new Intent(mContext, AlertDialog.class).putExtra("msg", "此用户已是你好友(被拉黑状态)，从黑名单列表中移出即可"));
+                        return;
+                    }
+                    String strin = getString(R.string.This_user_is_already_your_friend);
+                    startActivity(new Intent(mContext, AlertDialog.class).putExtra("msg", strin));
+                    return;
+                }
+
+                progressDialog = new ProgressDialog(mContext);
+                String stri = getResources().getString(R.string.Is_sending_a_request);
+                progressDialog.setMessage(stri);
+                progressDialog.setCanceledOnTouchOutside(false);
+                progressDialog.show();
+
+                new Thread(new Runnable() {
+                    public void run() {
+
+                        try {
+                            //demo写死了个reason，实际应该让用户手动填入
+                            String s = getResources().getString(R.string.Add_a_friend);
+                            EMContactManager.getInstance().addContact(toAddUsername, s);
+                            runOnUiThread(new Runnable() {
+                                public void run() {
+                                    progressDialog.dismiss();
+                                    String s1 = getResources().getString(R.string.send_successful);
+                                    Toast.makeText(getApplicationContext(), s1, Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        } catch (final Exception e) {
+                            runOnUiThread(new Runnable() {
+                                public void run() {
+                                    progressDialog.dismiss();
+                                    String s2 = getResources().getString(R.string.Request_add_buddy_failure);
+                                    Toast.makeText(getApplicationContext(), s2 + e.getMessage(), Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        }
+                    }
+                }).start();
+            }
+        });
+
 	}
 	
 	public void back(View v) {
