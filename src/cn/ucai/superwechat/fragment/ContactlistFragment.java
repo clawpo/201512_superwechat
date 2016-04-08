@@ -187,7 +187,7 @@ public class ContactlistFragment extends Fragment {
 		clearSearch = (ImageButton) getView().findViewById(R.id.search_clear);
 		query.addTextChangedListener(new TextWatcher() {
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
-//				adapter.getFilter().filter(s);
+				adapter.getFilter().filter(s);
 				if (s.length() > 0) {
 					clearSearch.setVisibility(View.VISIBLE);
 				} else {

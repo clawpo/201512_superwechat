@@ -40,6 +40,7 @@ import cn.ucai.superwechat.adapter.ContactAdapter;
 import cn.ucai.superwechat.bean.UserBean;
 import cn.ucai.superwechat.widget.Sidebar;
 
+
 public class GroupPickContactsActivity extends BaseActivity {
 	private ListView listView;
 	/** 是否为一个新建的群组 */
@@ -68,11 +69,10 @@ public class GroupPickContactsActivity extends BaseActivity {
 			exitingMembers = new ArrayList<String>();
 		// 获取好友列表
 		final ArrayList<UserBean> alluserList = new ArrayList<UserBean>();
+
 		for (UserBean user : SuperWeChatApplication.getInstance().getUserList().values()) {
 			if (!user.getUserName().equals(Constant.NEW_FRIENDS_USERNAME)
-					& !user.getUserName().equals(Constant.GROUP_USERNAME)
-					& !user.getUserName().equals(Constant.CHAT_ROOM)
-					& !user.getUserName().equals(Constant.CHAT_ROBOT))
+                    & !user.getUserName().equals(Constant.GROUP_USERNAME) )
 				alluserList.add(user);
 		}
 		// 对list进行排序

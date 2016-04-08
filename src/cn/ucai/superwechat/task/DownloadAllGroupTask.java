@@ -56,7 +56,7 @@ public class DownloadAllGroupTask extends BaseActivity {
                 ArrayList<GroupBean> groups = Utils.array2List(groupList);
                 list.addAll(groups);
                 Intent intent = new Intent("update_group");
-                mContext.sendBroadcast(intent);
+                mContext.sendStickyBroadcast(intent);
             }
         };
     }

@@ -25,14 +25,19 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import cn.ucai.superwechat.Constant;
+import cn.ucai.superwechat.DemoHXSDKHelper;
 import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.SuperWeChatApplication;
 import cn.ucai.superwechat.adapter.ContactAdapter;
+import cn.ucai.superwechat.applib.controller.HXSDKHelper;
 import cn.ucai.superwechat.bean.UserBean;
 import cn.ucai.superwechat.widget.Sidebar;
+
 
 public class PickContactNoCheckboxActivity extends BaseActivity {
 
@@ -78,9 +83,8 @@ public class PickContactNoCheckboxActivity extends BaseActivity {
 
 	private void getContactList() {
 		contactList.clear();
-//		Map<String, User> users = ((DemoHXSDKHelper) HXSDKHelper.getInstance()).getContactList();
-		HashMap<String, UserBean> users = SuperWeChatApplication.getInstance().getUserList();
-		Iterator<Entry<String, UserBean>> iterator = users.entrySet().iterator();
+        HashMap<String, UserBean> users = SuperWeChatApplication.getInstance().getUserList();
+        Iterator<Entry<String, UserBean>> iterator = users.entrySet().iterator();
 		while (iterator.hasNext()) {
 			Entry<String, UserBean> entry = iterator.next();
 			if (!entry.getKey().equals(Constant.NEW_FRIENDS_USERNAME) && !entry.getKey().equals(Constant.GROUP_USERNAME) && !entry.getKey().equals(Constant.CHAT_ROOM) && !entry.getKey().equals(Constant.CHAT_ROBOT))

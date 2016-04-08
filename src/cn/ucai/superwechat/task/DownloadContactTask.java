@@ -64,7 +64,7 @@ public class DownloadContactTask extends BaseActivity {
                 }
                 contacts.putAll(contactMap);
                 Intent intent = new Intent("update_contact");
-                mContext.sendBroadcast(intent);
+                mContext.sendStickyBroadcast(intent);
             }
         };
     }

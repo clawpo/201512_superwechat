@@ -53,7 +53,7 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer{
 	private MyFilter myFilter;
     private boolean notiyfyByFilter;
 
-	ArrayList<UserBean> mContactList;
+    ArrayList<UserBean> mContactList;
     Context mContext;
 
 	public ContactAdapter(Context context, int resource, ArrayList<UserBean> list) {
@@ -65,8 +65,13 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer{
 //		copyUserList.addAll(objects);
 		layoutInflater = LayoutInflater.from(context);
 	}
-	
-	private static class ViewHolder {
+
+    public void remove(UserBean user) {
+        mContactList.remove(user);
+        notifyDataSetChanged();
+    }
+
+    private static class ViewHolder {
 	    NetworkImageView avatar;
 	    TextView unreadMsgView;
 	    TextView nameTextview;
@@ -88,7 +93,6 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer{
 		}
 		
 		UserBean user = getItem(position);
-        Log.e(TAG,"user="+user);
 		if(user == null)
 			Log.d("ContactAdapter", position + "");
 		//设置nick，demo里不涉及到完整user，用username代替nick显示
@@ -121,8 +125,7 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer{
 		}else{
 		    holder.nameTextview.setText(user.getNick());
 		    //设置用户头像
-            UserUtils.setUserBeanAvatar(username,holder.avatar);
-//			UserUtils.setUserAvatar(getContext(), username, holder.avatar);
+			UserUtils.setUserBeanAvatar(username, holder.avatar);
 			if(holder.unreadMsgView != null)
 			    holder.unreadMsgView.setVisibility(View.INVISIBLE);
 		}
@@ -135,12 +138,12 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer{
 		return mContactList.get(position);
 	}
 
-	@Override
-	public long getItemId(int position) {
-		return 0;
-	}
+    @Override
+    public long getItemId(int position) {
+        return 0;
+    }
 
-	@Override
+    @Override
 	public int getCount() {
 		return mContactList==null?0:mContactList.size();
 	}
@@ -152,7 +155,7 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer{
 	public int getSectionForPosition(int position) {
 		return sectionOfPosition.get(position);
 	}
-
+	
 	@Override
 	public Object[] getSections() {
 		positionOfSection = new SparseIntArray();
@@ -177,10 +180,16 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer{
 		return list.toArray(new String[list.size()]);
 	}
 
-
+	public Filter getFilter() {
+		if(myFilter==null){
+			myFilter = new MyFilter(userList);
+		}
+		return myFilter;
+	}
+	
 	private class  MyFilter extends Filter{
         List<User> mOriginalList = null;
-
+		
 		public MyFilter(List<User> myList) {
 			this.mOriginalList = myList;
 		}
@@ -193,7 +202,7 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer{
 			}
 			EMLog.d(TAG, "contacts original size: " + mOriginalList.size());
 			EMLog.d(TAG, "contacts copy size: " + copyUserList.size());
-
+			
 			if(prefix==null || prefix.length()==0){
 				results.values = copyUserList;
 				results.count = copyUserList.size();
@@ -204,14 +213,14 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer{
 				for(int i=0;i<count;i++){
 					final User user = mOriginalList.get(i);
 					String username = user.getUsername();
-
+					
 					if(username.startsWith(prefixString)){
 						newValues.add(user);
 					}
 					else{
 						 final String[] words = username.split(" ");
 	                     final int wordCount = words.length;
-
+	
 	                     // Start at index 0, in case valueText starts with space(s)
 	                     for (int k = 0; k < wordCount; k++) {
 	                         if (words[k].startsWith(prefixString)) {
@@ -248,18 +257,11 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer{
 	@Override
 	public void notifyDataSetChanged() {
 	    super.notifyDataSetChanged();
-//	    if(!notiyfyByFilter){
-//	        copyUserList.clear();
-//	        copyUserList.addAll(userList);
-//	    }
+	    if(!notiyfyByFilter){
+	        copyUserList.clear();
+	        copyUserList.addAll(userList);
+	    }
 	}
-
-    public void remove(UserBean user){
-        if(mContactList!=null&&!mContactList.isEmpty()){
-            mContactList.remove(user);
-            notifyDataSetChanged();
-        }
-    }
 	
 
 }
