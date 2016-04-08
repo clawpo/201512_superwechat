@@ -91,7 +91,7 @@ public class UserUtils {
         imageView.setDefaultImageResId(R.drawable.default_avatar);
         if(user != null && user.getAvatar() != null){
             String path = I.DOWNLOAD_AVATAR_URL + user.getAvatar();
-            Log.e(TAG,"setCurrentUserBeanAvatar,path = "+path);
+            Log.e(TAG,"setUserAvatar,path = "+path);
             imageView.setImageUrl(path,RequestManager.getImageLoader());
         } else {
             imageView.setErrorImageResId(R.drawable.default_avatar);

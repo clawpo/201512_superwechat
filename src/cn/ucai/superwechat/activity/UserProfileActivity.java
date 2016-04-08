@@ -1,7 +1,5 @@
 package cn.ucai.superwechat.activity;
 
-import java.io.ByteArrayOutputStream;
-
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
@@ -22,20 +20,25 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.toolbox.NetworkImageView;
 import com.easemob.EMValueCallBack;
-import cn.ucai.superwechat.applib.controller.HXSDKHelper;
-import com.easemob.chat.EMChatManager;
-import cn.ucai.superwechat.DemoHXSDKHelper;
-import cn.ucai.superwechat.R;
-import cn.ucai.superwechat.domain.User;
-import cn.ucai.superwechat.utils.UserUtils;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
+
+import cn.ucai.superwechat.DemoHXSDKHelper;
+import cn.ucai.superwechat.R;
+import cn.ucai.superwechat.SuperWeChatApplication;
+import cn.ucai.superwechat.applib.controller.HXSDKHelper;
+import cn.ucai.superwechat.domain.User;
+import cn.ucai.superwechat.utils.UserUtils;
+
 public class UserProfileActivity extends BaseActivity implements OnClickListener{
+    public static final String TAG = UserProfileActivity.class.getName();
 	
 	private static final int REQUESTCODE_PICK = 1;
 	private static final int REQUESTCODE_CUTTING = 2;
-	private ImageView headAvatar;
+	private NetworkImageView headAvatar;
 	private ImageView headPhotoUpdate;
 	private ImageView iconRightArrow;
 	private TextView tvNickName;
@@ -54,7 +57,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 	}
 	
 	private void initView() {
-		headAvatar = (ImageView) findViewById(R.id.user_head_avatar);
+		headAvatar = (NetworkImageView) findViewById(R.id.user_head_avatar);
 		headPhotoUpdate = (ImageView) findViewById(R.id.user_head_headphoto_update);
 		tvUsername = (TextView) findViewById(R.id.user_username);
 		tvNickName = (TextView) findViewById(R.id.user_nickname);
@@ -65,6 +68,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 	private void initListener() {
 		Intent intent = getIntent();
 		String username = intent.getStringExtra("username");
+        String currentUserName = SuperWeChatApplication.getInstance().getUserName();
 		boolean enableUpdate = intent.getBooleanExtra("setting", false);
 		if (enableUpdate) {
 			headPhotoUpdate.setVisibility(View.VISIBLE);
@@ -75,19 +79,15 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 			headPhotoUpdate.setVisibility(View.GONE);
 			iconRightArrow.setVisibility(View.INVISIBLE);
 		}
-		if (username == null) {
-			tvUsername.setText(EMChatManager.getInstance().getCurrentUser());
-			UserUtils.setCurrentUserNick(tvNickName);
-			UserUtils.setCurrentUserAvatar(this, headAvatar);
-		} else if (username.equals(EMChatManager.getInstance().getCurrentUser())) {
-			tvUsername.setText(EMChatManager.getInstance().getCurrentUser());
-			UserUtils.setCurrentUserNick(tvNickName);
-			UserUtils.setCurrentUserAvatar(this, headAvatar);
+		if (username == null || username.equals(currentUserName)) {
+			tvUsername.setText(currentUserName);
+			UserUtils.setCurrentUserBeanNick(tvNickName);
+			UserUtils.setCurrentUserBeanAvatar(headAvatar);
 		} else {
 			tvUsername.setText(username);
-			UserUtils.setUserNick(username, tvNickName);
-			UserUtils.setUserAvatar(this, username, headAvatar);
-			asyncFetchUserInfo(username);
+			UserUtils.setUserBeanNick(username, tvNickName);
+			UserUtils.setUserBeanAvatar(username, headAvatar);
+//			asyncFetchUserInfo(username);
 		}
 	}
 
@@ -120,7 +120,8 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 	}
 	
 	public void asyncFetchUserInfo(String username){
-		((DemoHXSDKHelper) HXSDKHelper.getInstance()).getUserProfileManager().asyncGetUserInfo(username, new EMValueCallBack<User>() {
+		((DemoHXSDKHelper) HXSDKHelper.getInstance()).getUserProfileManager()
+                .asyncGetUserInfo(username, new EMValueCallBack<User>() {
 			
 			@Override
 			public void onSuccess(User user) {

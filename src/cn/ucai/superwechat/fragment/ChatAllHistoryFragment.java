@@ -1,11 +1,5 @@
 package cn.ucai.superwechat.fragment;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Hashtable;
-import java.util.List;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -37,9 +31,16 @@ import android.widget.Toast;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMConversation;
 import com.easemob.chat.EMConversation.EMConversationType;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Hashtable;
+import java.util.List;
+
 import cn.ucai.superwechat.Constant;
-import cn.ucai.superwechat.SuperWeChatApplication;
 import cn.ucai.superwechat.R;
+import cn.ucai.superwechat.SuperWeChatApplication;
 import cn.ucai.superwechat.activity.ChatActivity;
 import cn.ucai.superwechat.activity.MainActivity;
 import cn.ucai.superwechat.adapter.ChatAllHistoryAdapter;
@@ -91,7 +92,7 @@ public class ChatAllHistoryFragment extends Fragment implements View.OnClickList
 				EMConversation conversation = adapter.getItem(position);
 				String username = conversation.getUserName();
 				if (username.equals(SuperWeChatApplication.getInstance().getUserName()))
-					Toast.makeText(getActivity(), st2, 0).show();
+					Toast.makeText(getActivity(), st2, Toast.LENGTH_SHORT).show();
 				else {
 				    // 进入聊天页面
 				    Intent intent = new Intent(getActivity(), ChatActivity.class);
@@ -211,8 +212,7 @@ public class ChatAllHistoryFragment extends Fragment implements View.OnClickList
 
 	/**
 	 * 获取所有会话
-	 * 
-	 * @param context
+	 *
 	 * @return
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         +	 */
 	private List<EMConversation> loadConversationsWithRecentChat() {
@@ -251,7 +251,7 @@ public class ChatAllHistoryFragment extends Fragment implements View.OnClickList
 	/**
 	 * 根据最后一条消息的时间排序
 	 * 
-	 * @param usernames
+	 * @param conversationList
 	 */
 	private void sortConversationByLastChatTime(List<Pair<Long, EMConversation>> conversationList) {
 		Collections.sort(conversationList, new Comparator<Pair<Long, EMConversation>>() {
