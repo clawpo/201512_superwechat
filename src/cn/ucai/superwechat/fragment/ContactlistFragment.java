@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cn.ucai.superwechat.activity;
+package cn.ucai.superwechat.fragment;
 
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -23,6 +23,7 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -55,6 +56,11 @@ import cn.ucai.superwechat.Constant;
 import cn.ucai.superwechat.DemoHXSDKHelper;
 import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.SuperWeChatApplication;
+import cn.ucai.superwechat.activity.AddContactActivity;
+import cn.ucai.superwechat.activity.ChatActivity;
+import cn.ucai.superwechat.activity.GroupsActivity;
+import cn.ucai.superwechat.activity.MainActivity;
+import cn.ucai.superwechat.activity.NewFriendsMsgActivity;
 import cn.ucai.superwechat.adapter.ContactAdapter;
 import cn.ucai.superwechat.applib.controller.HXSDKHelper;
 import cn.ucai.superwechat.bean.UserBean;
@@ -500,15 +506,12 @@ public class ContactlistFragment extends Fragment {
 //	}
 
     private void initContactList(){
-        mContactList = SuperWeChatApplication.getInstance().getContactList();
-        // 添加user"申请与通知"
-        UserBean newFriends = new UserBean();
-        newFriends.setUserName(Constant.NEW_FRIENDS_USERNAME);
-        String strChat = getActivity().getString(R.string.Application_and_notify);
-        newFriends.setNick(strChat);
-        if(mContactList.indexOf(newFriends)==-1){
-            mContactList.add(0, newFriends);
-        }
+        ArrayList<UserBean> contactlist = SuperWeChatApplication.getInstance().getContactList();
+        Log.e(TAG,"contactlist="+contactlist.size());
+        Log.e(TAG,"mContactList="+mContactList.size());
+        mContactList.clear();
+        mContactList.addAll(contactlist);
+        Log.e(TAG,"mContactList="+mContactList.size());
         // 添加"群聊"
         UserBean groupUser = new UserBean();
         String strGroup = getActivity().getString(R.string.group_chat);
@@ -517,6 +520,14 @@ public class ContactlistFragment extends Fragment {
         groupUser.setHeader("");
         if(mContactList.indexOf(groupUser)==-1){
             mContactList.add(0, groupUser);
+        }
+        // 添加user"申请与通知"
+        UserBean newFriends = new UserBean();
+        newFriends.setUserName(Constant.NEW_FRIENDS_USERNAME);
+        String strChat = getActivity().getString(R.string.Application_and_notify);
+        newFriends.setNick(strChat);
+        if(mContactList.indexOf(newFriends)==-1){
+            mContactList.add(0, newFriends);
         }
         for(UserBean user : mContactList){
             UserUtils.setUserHearder(user.getUserName(),user);
@@ -553,9 +564,6 @@ public class ContactlistFragment extends Fragment {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-            mContactList.clear();
-			ArrayList<UserBean> contactList = SuperWeChatApplication.getInstance().getContactList();
-            mContactList.addAll(contactList);
             refresh();
 		}
 	}

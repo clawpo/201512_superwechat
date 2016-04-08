@@ -61,7 +61,7 @@ public class DownloadContactListTask extends BaseActivity {
                 if(userList==null){
                     return;
                 }
-                Log.e(TAG,"responseDownloadUserListListener,userList.length"+userList.length);
+                Log.e(TAG,"responseDownloadUserListListener,userList.length="+userList.length);
                 ArrayList<UserBean> contactList = SuperWeChatApplication.getInstance().getContactList();
                 ArrayList<UserBean> users = Utils.array2List(userList);
                 contactList.addAll(users);
@@ -72,7 +72,7 @@ public class DownloadContactListTask extends BaseActivity {
                 }
                 userBeanMap.putAll(userMap);
                 Intent intent = new Intent("update_contact_list");
-                mContext.sendBroadcast(intent);
+                mContext.sendStickyBroadcast(intent);
             }
         };
     }
