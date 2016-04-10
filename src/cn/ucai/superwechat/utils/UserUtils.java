@@ -65,7 +65,6 @@ public class UserUtils {
      */
     public static void setUserBeanAvatar(String username, NetworkImageView imageView){
         UserBean user = getUserBeanInfo(username);
-        Log.e(TAG,"setUserBeanAvatar,user = "+user);
         setUserAvatar(user,imageView);
     }
 
@@ -73,7 +72,6 @@ public class UserUtils {
      * 设置用户头像
      */
     public static void setUserBeanAvatar(UserBean user, NetworkImageView imageView){
-        Log.e(TAG,"setUserBeanAvatar,user = "+user);
         setUserAvatar(user,imageView);
     }
     
@@ -91,7 +89,6 @@ public class UserUtils {
 
 	public static void setCurrentUserBeanAvatar(NetworkImageView imageView){
 		UserBean user = SuperWeChatApplication.getInstance().getUser();
-        Log.e(TAG,"setCurrentUserBeanAvatar,user = "+user);
         setUserAvatar(user,imageView);
 	}
 
@@ -99,12 +96,13 @@ public class UserUtils {
         imageView.setDefaultImageResId(R.drawable.default_avatar);
         if(user != null && user.getAvatar() != null){
             String path = I.DOWNLOAD_AVATAR_URL + user.getAvatar();
-            Log.e(TAG,"setUserAvatar,path = "+path);
             imageView.setImageUrl(path,RequestManager.getImageLoader());
         } else {
             imageView.setErrorImageResId(R.drawable.default_avatar);
         }
     }
+
+
     
     /**
      * 设置用户昵称

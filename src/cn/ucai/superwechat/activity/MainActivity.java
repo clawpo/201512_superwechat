@@ -615,11 +615,43 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 		public void onContactDeleted(final List<String> usernameList) {
 			// 被删除
 			Map<String, User> localUsers = ((DemoHXSDKHelper)HXSDKHelper.getInstance()).getContactList();
-			for (String username : usernameList) {
+            HashMap<String, UserBean> userList = SuperWeChatApplication.getInstance().getUserList();
+            ArrayList<UserBean> contactList = SuperWeChatApplication.getInstance().getContactList();
+            HashMap<Integer, ContactBean> contacts = SuperWeChatApplication.getInstance().getContacts();
+
+            for (String username : usernameList) {
 				localUsers.remove(username);
+                userList.remove(username);
 				EMUserDao.deleteContact(username);
 				inviteMessgeDao.deleteMessage(username);
 			}
+            ArrayList<ContactBean> deleteContacts = new ArrayList<ContactBean>();
+            ArrayList<UserBean> deleteContactList = new ArrayList<UserBean>();
+            //删除内存中好友，删除的好友存放在deleteContactList和deleteContacts集合中
+            for(UserBean contactUser : contactList){
+                if(usernameList.contains(contactUser.getUserName())){
+                    ContactBean contact = contacts.remove(contactUser.getId());
+                    deleteContacts.add(contact);
+                    deleteContactList.add(contactUser);
+                }
+            }
+            if(deleteContacts.size()>0){
+                contactList.removeAll(deleteContactList);//删除内存中好友
+                // 删除应用服务器的联系人记录
+                try {
+                    for(ContactBean contact : deleteContacts) {
+                        String path = new ApiParams()
+                                .with(I.Contact.MYUID, contact.getMyuid() + "")
+                                .with(I.Contact.CUID, contact.getCuid() + "")
+                                .getRequestUrl(I.REQUEST_DELETE_CONTACT);
+                        Log.e(TAG,"delete contacts,path="+path);
+                        executeRequest(new GsonRequest<Boolean>(path, Boolean.class,
+                                responseDeleteContactListener(), errorListener()));
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
 			runOnUiThread(new Runnable() {
 				public void run() {
 					// 如果正在与此用户的聊天页面
@@ -639,7 +671,19 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 
 		}
 
-		@Override
+        private Response.Listener<Boolean> responseDeleteContactListener() {
+            return new Response.Listener<Boolean>() {
+                @Override
+                public void onResponse(Boolean isSuccess) {
+                    if(isSuccess){
+                        Intent intent = new Intent("update_contacts").setAction("update_contact_list");
+                        mContext.sendBroadcast(intent);
+                    }
+                }
+            };
+        }
+
+        @Override
 		public void onContactInvited(String username, String reason) {
 			
 			// 接到邀请的消息，如果不处理(同意或拒绝)，掉线后，服务器会自动再发过来，所以客户端不需要重复提醒

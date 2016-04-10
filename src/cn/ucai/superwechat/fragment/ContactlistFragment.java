@@ -43,6 +43,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.android.volley.Response;
 import com.easemob.chat.EMContactManager;
 import com.easemob.exceptions.EaseMobException;
 import com.easemob.util.EMLog;
@@ -50,10 +51,12 @@ import com.easemob.util.EMLog;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 
 import cn.ucai.superwechat.Constant;
 import cn.ucai.superwechat.DemoHXSDKHelper;
+import cn.ucai.superwechat.I;
 import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.SuperWeChatApplication;
 import cn.ucai.superwechat.activity.AddContactActivity;
@@ -63,7 +66,10 @@ import cn.ucai.superwechat.activity.MainActivity;
 import cn.ucai.superwechat.activity.NewFriendsMsgActivity;
 import cn.ucai.superwechat.adapter.ContactAdapter;
 import cn.ucai.superwechat.applib.controller.HXSDKHelper;
+import cn.ucai.superwechat.bean.ContactBean;
 import cn.ucai.superwechat.bean.UserBean;
+import cn.ucai.superwechat.data.ApiParams;
+import cn.ucai.superwechat.data.GsonRequest;
 import cn.ucai.superwechat.db.EMUserDao;
 import cn.ucai.superwechat.db.InviteMessgeDao;
 import cn.ucai.superwechat.domain.User;
@@ -95,6 +101,8 @@ public class ContactlistFragment extends Fragment {
 
     private ArrayList<UserBean> mContactList = new ArrayList<UserBean>();
     ContactListChangedReceiver mReceiver;
+
+    MainActivity mContext;
 
 	class HXContactSyncListener implements HXSDKHelper.HXSyncListener {
 		@Override
@@ -163,7 +171,13 @@ public class ContactlistFragment extends Fragment {
 		return inflater.inflate(R.layout.fragment_contact_list, container, false);
 	}
 
-	@Override
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = (MainActivity) context;
+    }
+
+    @Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		//防止被T后，没点确定按钮然后按了home键，长期在后台又进app导致的crash
@@ -353,6 +367,39 @@ public class ContactlistFragment extends Fragment {
 		new Thread(new Runnable() {
 			public void run() {
 				try {
+                    //删除应用服务器的好友关系
+                    HashMap<Integer, ContactBean> contacts = SuperWeChatApplication.getInstance().getContacts();
+                    ArrayList<UserBean> contactList = SuperWeChatApplication.getInstance().getContactList();
+                    HashMap<String, UserBean> userList = SuperWeChatApplication.getInstance().getUserList();
+                    ArrayList<ContactBean> deleteContacts = new ArrayList<ContactBean>();
+                    ArrayList<UserBean> deleteContactList = new ArrayList<UserBean>();
+                    //删除内存中好友，删除的好友存放在deleteContactList和deleteContacts集合中
+                    for(UserBean contactUser : contactList){
+                        if(tobeDeleteUser.equals(contactUser)){
+                            ContactBean contact = contacts.remove(contactUser.getId());
+                            deleteContacts.add(contact);
+                            deleteContactList.add(contactUser);
+                            userList.remove(contactUser.getUserName());
+                        }
+                    }
+                    if(deleteContacts.size()>0){
+                        contactList.removeAll(deleteContactList);//删除内存中好友
+                        // 删除应用服务器的联系人记录
+                        try {
+                            for(ContactBean contact : deleteContacts) {
+                                String path = new ApiParams()
+                                        .with(I.KEY_REQUEST, I.REQUEST_DELETE_CONTACT)
+                                        .with(I.Contact.MYUID, contact.getMyuid() + "")
+                                        .with(I.Contact.CUID, contact.getCuid() + "")
+                                        .getUrl(SuperWeChatApplication.SERVER_ROOT);
+                                Log.e(TAG,"fragment delete contacts,path="+path);
+                                mContext.executeRequest(new GsonRequest<Boolean>(path, Boolean.class,
+                                        responseDeleteContactListener(), mContext.errorListener()));
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
 					EMContactManager.getInstance().deleteContact(tobeDeleteUser.getUserName());
 					// 删除db和内存中此用户的数据
 					EMUserDao dao = new EMUserDao(getActivity());
@@ -381,7 +428,19 @@ public class ContactlistFragment extends Fragment {
 
 	}
 
-	/**
+    private Response.Listener<Boolean> responseDeleteContactListener() {
+        return new Response.Listener<Boolean>() {
+            @Override
+            public void onResponse(Boolean isSuccess) {
+                if(isSuccess){
+                    Intent intent = new Intent("update_contacts").setAction("update_contact_list");
+                    mContext.sendBroadcast(intent);
+                }
+            }
+        };
+    }
+
+    /**
 	 * 把user移入到黑名单
 	 */
 	private void moveToBlacklist(final String username){
