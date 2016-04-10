@@ -32,9 +32,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.ucai.superwechat.Constant;
+import cn.ucai.superwechat.DemoHXSDKHelper;
 import cn.ucai.superwechat.R;
+import cn.ucai.superwechat.applib.controller.HXSDKHelper;
 import cn.ucai.superwechat.bean.UserBean;
-import cn.ucai.superwechat.domain.User;
+import cn.ucai.superwechat.data.RequestManager;
 import cn.ucai.superwechat.utils.UserUtils;
 
 /**
@@ -44,8 +46,8 @@ import cn.ucai.superwechat.utils.UserUtils;
 public class ContactAdapter extends BaseAdapter implements SectionIndexer{
     private static final String TAG = "ContactAdapter";
 	List<String> list;
-	List<User> userList;
-	List<User> copyUserList;
+//    ArrayList<UserBean> userList;
+    ArrayList<UserBean> copyUserList;
 	private LayoutInflater layoutInflater;
 	private SparseIntArray positionOfSection;
 	private SparseIntArray sectionOfPosition;
@@ -61,8 +63,8 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer{
         mContactList = list;
 		this.res = resource;
 //		this.userList = objects;
-		copyUserList = new ArrayList<User>();
-//		copyUserList.addAll(objects);
+		copyUserList = new ArrayList<UserBean>();
+		copyUserList.addAll(list);
 		layoutInflater = LayoutInflater.from(context);
 	}
 
@@ -91,7 +93,6 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer{
 		}else{
 		    holder = (ViewHolder) convertView.getTag();
 		}
-		
 		UserBean user = getItem(position);
 		if(user == null)
 			Log.d("ContactAdapter", position + "");
@@ -110,9 +111,13 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer{
 		}
 		//显示申请与通知item
 		if(username.equals(Constant.NEW_FRIENDS_USERNAME)){
-		    holder.nameTextview.setText(user.getNick());
+            holder.nameTextview.setText(user.getNick());
 		    holder.avatar.setDefaultImageResId(R.drawable.new_friends_icon);
-			if(user.getUnreadMsgCount() > 0){
+            holder.avatar.setErrorImageResId(R.drawable.new_friends_icon);
+            holder.avatar.setImageUrl("", RequestManager.getImageLoader());
+			int unreadMsgCount = ((DemoHXSDKHelper) HXSDKHelper.getInstance())
+                    .getContactList().get(Constant.NEW_FRIENDS_USERNAME).getUnreadMsgCount();
+			if(user.getUnreadMsgCount() > 0 || unreadMsgCount >0){
 			    holder.unreadMsgView.setVisibility(View.VISIBLE);
 //			    holder.unreadMsgView.setText(user.getUnreadMsgCount()+"");
 			}else{
@@ -122,6 +127,8 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer{
 			//群聊item
 		    holder.nameTextview.setText(user.getNick());
 		    holder.avatar.setDefaultImageResId(R.drawable.groups_icon);
+            holder.avatar.setErrorImageResId(R.drawable.group_icon);
+            holder.avatar.setImageUrl("", RequestManager.getImageLoader());
 		}else{
 		    holder.nameTextview.setText(user.getNick());
 		    //设置用户头像
@@ -182,15 +189,15 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer{
 
 	public Filter getFilter() {
 		if(myFilter==null){
-			myFilter = new MyFilter(userList);
+			myFilter = new MyFilter(mContactList);
 		}
 		return myFilter;
 	}
 	
 	private class  MyFilter extends Filter{
-        List<User> mOriginalList = null;
+        ArrayList<UserBean> mOriginalList = null;
 		
-		public MyFilter(List<User> myList) {
+		public MyFilter(ArrayList<UserBean> myList) {
 			this.mOriginalList = myList;
 		}
 
@@ -198,7 +205,7 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer{
 		protected synchronized FilterResults performFiltering(CharSequence prefix) {
 			FilterResults results = new FilterResults();
 			if(mOriginalList==null){
-			    mOriginalList = new ArrayList<User>();
+			    mOriginalList = new ArrayList<UserBean>();
 			}
 			EMLog.d(TAG, "contacts original size: " + mOriginalList.size());
 			EMLog.d(TAG, "contacts copy size: " + copyUserList.size());
@@ -206,15 +213,15 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer{
 			if(prefix==null || prefix.length()==0){
 				results.values = copyUserList;
 				results.count = copyUserList.size();
-			}else{
+			}else if(mOriginalList.size()>2){
 				String prefixString = prefix.toString();
 				final int count = mOriginalList.size();
-				final ArrayList<User> newValues = new ArrayList<User>();
-				for(int i=0;i<count;i++){
-					final User user = mOriginalList.get(i);
-					String username = user.getUsername();
-					
-					if(username.startsWith(prefixString)){
+				final ArrayList<UserBean> newValues = new ArrayList<UserBean>();
+				for(int i=2;i<count;i++){
+					final UserBean user = mOriginalList.get(i);
+					String username = user.getUserName();
+					String nick = user.getNick();
+					if(username.contains(prefixString) || nick.contains(prefixString)){
 						newValues.add(user);
 					}
 					else{
@@ -240,8 +247,10 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer{
 		@Override
 		protected synchronized void publishResults(CharSequence constraint,
 				FilterResults results) {
-			userList.clear();
-			userList.addAll((List<User>)results.values);
+			mContactList.clear();
+            if(results.values!=null) {
+                mContactList.addAll((ArrayList<UserBean>) results.values);
+            }
 			EMLog.d(TAG, "publish contacts filter results size: " + results.count);
 			if (results.count > 0) {
 			    notiyfyByFilter = true;
@@ -259,7 +268,7 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer{
 	    super.notifyDataSetChanged();
 	    if(!notiyfyByFilter){
 	        copyUserList.clear();
-	        copyUserList.addAll(userList);
+	        copyUserList.addAll(mContactList);
 	    }
 	}
 	

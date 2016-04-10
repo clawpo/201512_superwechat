@@ -299,6 +299,7 @@
     <string name="toast_updatephoto_success">update photo success!</string>
     <string name="toast_updatephoto_fail">update photo fail!</string>
     <string name="Add_buddy_success">add buddy success</string>
+    <string name="Add_buddy_failed">add buddy failed</string>
     <string name="Nick_name_cannot_be_empty">Nick name cannot be empty!</string>
     <string name="Group_name_existed">Group name existed</string>
     <string name="Create_groups_Success">Success to create groups</string>

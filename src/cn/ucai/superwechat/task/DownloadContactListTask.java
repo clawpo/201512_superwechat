@@ -64,12 +64,14 @@ public class DownloadContactListTask extends BaseActivity {
                 Log.e(TAG,"responseDownloadUserListListener,userList.length="+userList.length);
                 ArrayList<UserBean> contactList = SuperWeChatApplication.getInstance().getContactList();
                 ArrayList<UserBean> users = Utils.array2List(userList);
+                contactList.clear();
                 contactList.addAll(users);
                 HashMap<String, UserBean> userBeanMap = SuperWeChatApplication.getInstance().getUserList();
                 HashMap<String, UserBean> userMap = new HashMap<String, UserBean>();
                 for (UserBean u : userList){
                     userMap.put(u.getUserName(),u);
                 }
+                userBeanMap.clear();
                 userBeanMap.putAll(userMap);
                 Intent intent = new Intent("update_contact_list");
                 mContext.sendStickyBroadcast(intent);

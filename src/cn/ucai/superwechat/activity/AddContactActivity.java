@@ -107,7 +107,7 @@ public class AddContactActivity extends BaseActivity{
                     startActivity(new Intent(mContext, AlertDialog.class).putExtra("msg", str));
                     return;
                 }
-
+                toAddUsername = name;
                 try {
                     String path = new ApiParams()
                             .with(I.User.USER_NAME, name)

@@ -48,6 +48,7 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/horizontal_slide"
+            android:hardwareAccelerated="false"
             android:windowSoftInputMode="adjustPan" >
         </activity>
 

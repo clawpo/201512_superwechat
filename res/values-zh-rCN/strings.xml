@@ -309,6 +309,7 @@
     <string name="toast_updatephoto_success">更新头像成功!</string>
     <string name="toast_updatephoto_fail">更新头像失败!</string>
     <string name="Add_buddy_success">添加好友成功</string>
+    <string name="Add_buddy_failed">添加好友失败</string>
     <string name="Nick_name_cannot_be_empty">昵称不能为空！</string>
     <string name="Group_name_existed">群组名称已经存在</string>
     <string name="Create_groups_Success">创建群组成功</string>
