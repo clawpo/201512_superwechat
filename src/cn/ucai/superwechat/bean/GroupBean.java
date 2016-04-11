@@ -27,6 +27,11 @@ public class GroupBean implements Serializable {
 	public GroupBean(){
 		
 	}
+
+	public GroupBean(String groupName){
+		super();
+		this.name = groupName;
+	}
 	
 	public GroupBean (String groupId, String name, String intro,
 			String owner, boolean isPublic, boolean isExame, String members) {

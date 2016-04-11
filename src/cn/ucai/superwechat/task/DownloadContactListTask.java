@@ -57,7 +57,6 @@ public class DownloadContactListTask extends BaseActivity {
         return new Response.Listener<UserBean[]>(){
             @Override
             public void onResponse(UserBean[] userList) {
-                Log.e(TAG,"responseDownloadUserListListener,userList"+userList);
                 if(userList==null){
                     return;
                 }

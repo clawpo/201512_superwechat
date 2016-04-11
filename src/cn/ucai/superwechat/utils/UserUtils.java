@@ -2,6 +2,7 @@ package cn.ucai.superwechat.utils;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -9,12 +10,15 @@ import com.android.volley.toolbox.NetworkImageView;
 import com.easemob.util.HanziToPinyin;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+
 import cn.ucai.superwechat.Constant;
 import cn.ucai.superwechat.DemoHXSDKHelper;
 import cn.ucai.superwechat.I;
 import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.SuperWeChatApplication;
 import cn.ucai.superwechat.applib.controller.HXSDKHelper;
+import cn.ucai.superwechat.bean.GroupBean;
 import cn.ucai.superwechat.bean.UserBean;
 import cn.ucai.superwechat.data.RequestManager;
 import cn.ucai.superwechat.domain.User;
@@ -43,6 +47,21 @@ public class UserUtils {
     public static UserBean getUserBeanInfo(String username){
         UserBean user = SuperWeChatApplication.getInstance().getUserList().get(username);
         return user;
+    }
+
+    public static GroupBean getGroupBeanInfo(String groupName){
+        if(groupName==null){
+            return null;
+        }
+        ArrayList<GroupBean> groupList = SuperWeChatApplication.getInstance().getGroupList();
+        if(groupList!=null){
+            for(GroupBean g : groupList){
+                if(g.getName().equals(groupName)){
+                    return g;
+                }
+            }
+        }
+        return null;
     }
     
     /**
@@ -98,6 +117,21 @@ public class UserUtils {
             imageView.setImageUrl(path,RequestManager.getImageLoader());
         } else {
             imageView.setErrorImageResId(R.drawable.default_avatar);
+        }
+    }
+
+    public static void setGroupAvatar(String groupName,NetworkImageView imageView){
+        GroupBean group = getGroupBeanInfo(groupName);
+        setGroupBeanAvatar(group,imageView);
+    }
+
+    public static void setGroupBeanAvatar(GroupBean group,NetworkImageView imageView){
+        imageView.setDefaultImageResId(R.drawable.group_icon);
+        if(group!=null && group.getName()!=null){
+            String path = I.DOWNLOAD_AVATAR_URL + group.getAvatar();
+            imageView.setImageUrl(path,RequestManager.getImageLoader());
+        }else{
+            imageView.setErrorImageResId(R.drawable.group_icon);
         }
     }
 
