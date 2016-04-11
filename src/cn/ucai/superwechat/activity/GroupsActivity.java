@@ -75,9 +75,7 @@ public class GroupsActivity extends BaseActivity {
 						}, 1000);
 					} else {
 						if (!GroupsActivity.this.isFinishing()) {
-							String s1 = getResources()
-									.getString(
-											R.string.Failed_to_get_group_chat_information);
+							String s1 = getResources().getString(R.string.Failed_to_get_group_chat_information);
 							Toast.makeText(GroupsActivity.this, s1, Toast.LENGTH_LONG).show();
 							progressBar.setVisibility(View.GONE);
 						}
@@ -91,75 +89,94 @@ public class GroupsActivity extends BaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.fragment_groups);
-
 		instance = this;
+        initView();
+        initData();
+        setListener();
 		inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-		grouplist = SuperWeChatApplication.getInstance().getGroupList();
-		groupListView = (ListView) findViewById(R.id.list);
-		
-		swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_layout);
-		swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light,
-		                android.R.color.holo_orange_light, android.R.color.holo_red_light);
-		swipeRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
-
-			@Override
-			public void onRefresh() {
-			    MainActivity.asyncFetchGroupsFromServer();
-			}
-		});
-		
-		groupAdapter = new GroupAdapter(this, 1, grouplist);
-		groupListView.setAdapter(groupAdapter);
-		groupListView.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				if (position == 1) {
-					// 新建群聊
-					startActivityForResult(new Intent(GroupsActivity.this, NewGroupActivity.class), REQUEST_NEW_GROUP);
-				} else if (position == 2) {
-					// 添加公开群
-					startActivityForResult(new Intent(GroupsActivity.this, PublicGroupsActivity.class), REQUEST_NEW_PUBLIC_GROUP);
-				} else {
-					// 进入群聊
-					Intent intent = new Intent(GroupsActivity.this, ChatActivity.class);
-					// it is group chat
-					intent.putExtra("chatType", ChatActivity.CHATTYPE_GROUP);
-					intent.putExtra("groupId", groupAdapter.getItem(position).getGroupId());
-					startActivityForResult(intent, REQUEST_ENTER_CHATACTIVITY);
-				}
-			}
-
-		});
-		groupListView.setOnTouchListener(new OnTouchListener() {
-
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				if (getWindow().getAttributes().softInputMode != WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN) {
-					if (getCurrentFocus() != null)
-						inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
-								InputMethodManager.HIDE_NOT_ALWAYS);
-				}
-				return false;
-			}
-		});
-		
-		progressBar = (View)findViewById(R.id.progress_bar);
-		
-		syncListener = new SyncListener();
-		HXSDKHelper.getInstance().addSyncGroupListener(syncListener);
-
 		if (!HXSDKHelper.getInstance().isGroupsSyncedWithServer()) {
 			progressBar.setVisibility(View.VISIBLE);
 		} else {
 			progressBar.setVisibility(View.GONE);
 		}
-		
 		refresh();
         registerGroupChangedReceiver();
 	}
 
-	/**
+    private void setListener() {
+        setGroupRefreshListener();
+        setGroupListViewItemClickListener();
+        setGroupListViewTouchListener();
+        syncListener = new SyncListener();
+        HXSDKHelper.getInstance().addSyncGroupListener(syncListener);
+    }
+
+
+    private void setGroupListViewTouchListener() {
+        groupListView.setOnTouchListener(new OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (getWindow().getAttributes().softInputMode != WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN) {
+                    if (getCurrentFocus() != null)
+                        inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                                InputMethodManager.HIDE_NOT_ALWAYS);
+                }
+                return false;
+            }
+        });
+    }
+
+    private void setGroupListViewItemClickListener() {
+        groupListView.setOnItemClickListener(new OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (position == 1) {
+                    // 新建群聊
+                    startActivityForResult(new Intent(GroupsActivity.this, NewGroupActivity.class), REQUEST_NEW_GROUP);
+                } else if (position == 2) {
+                    // 添加公开群
+                    startActivityForResult(new Intent(GroupsActivity.this, PublicGroupsActivity.class), REQUEST_NEW_PUBLIC_GROUP);
+                } else {
+                    // 进入群聊
+                    Intent intent = new Intent(GroupsActivity.this, ChatActivity.class);
+                    // it is group chat
+                    intent.putExtra("chatType", ChatActivity.CHATTYPE_GROUP);
+                    intent.putExtra("groupId", groupAdapter.getItem(position).getGroupId());
+                    startActivityForResult(intent, REQUEST_ENTER_CHATACTIVITY);
+                }
+            }
+
+        });
+    }
+
+    private void setGroupRefreshListener() {
+        swipeRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+
+            @Override
+            public void onRefresh() {
+                MainActivity.asyncFetchGroupsFromServer();
+            }
+        });
+    }
+
+    private void initData() {
+        grouplist = SuperWeChatApplication.getInstance().getGroupList();
+        groupAdapter = new GroupAdapter(this, 1, grouplist);
+        groupListView.setAdapter(groupAdapter);
+
+    }
+
+    private void initView() {
+        groupListView = (ListView) findViewById(R.id.list);
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_layout);
+        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light,
+                android.R.color.holo_orange_light, android.R.color.holo_red_light);
+        progressBar = (View)findViewById(R.id.progress_bar);
+    }
+
+    /**
 	 * 进入公开群聊列表
 	 */
 	public void onPublicGroups(View view) {
