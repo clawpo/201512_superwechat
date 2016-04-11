@@ -13,8 +13,6 @@
  */
 package cn.ucai.superwechat.adapter;
 
-import java.util.List;
-
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -28,8 +26,13 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.toolbox.NetworkImageView;
 import com.easemob.chat.EMGroup;
+
+import java.util.List;
+
 import cn.ucai.superwechat.R;
+import cn.ucai.superwechat.utils.UserUtils;
 
 public class GroupAdapter extends ArrayAdapter<EMGroup> {
 
@@ -110,8 +113,9 @@ public class GroupAdapter extends ArrayAdapter<EMGroup> {
 			if (convertView == null) {
 				convertView = inflater.inflate(R.layout.row_group, null);
 			}
-			((TextView) convertView.findViewById(R.id.name)).setText(getItem(position - 3).getGroupName());
-
+			String groupName = getItem(position - 3).getGroupName();
+			((TextView) convertView.findViewById(R.id.name)).setText(groupName);
+			UserUtils.setGroupAvatar(groupName,((NetworkImageView) convertView.findViewById(R.id.avatar)));
 		}
 
 		return convertView;
