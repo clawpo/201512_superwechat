@@ -206,12 +206,13 @@ public class NewGroupActivity extends BaseActivity {
                                         isSuccess=NetUtil.uploadAvatar(mContext, "group_icon", groupName);
                                         if(isSuccess) {
                                             toCreateGroup.setAvatar("group_icon/" + groupName + ".jpg");
+                                            Intent intent = new Intent("update_group").putExtra("group",toCreateGroup);
+                                            setResult(RESULT_OK,intent);
                                         }else{
                                             progressDialog.dismiss();
                                             Utils.showToast(mContext,R.string.upload_avatar_failed,Toast.LENGTH_SHORT);
                                         }
                                         progressDialog.dismiss();
-                                        setResult(RESULT_OK);
                                         finish();
                                     } catch (Exception e) {
                                         e.printStackTrace();

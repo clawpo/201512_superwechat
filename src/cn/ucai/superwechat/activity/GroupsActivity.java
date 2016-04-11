@@ -13,9 +13,10 @@
  */
 package cn.ucai.superwechat.activity;
 
-import java.util.List;
-
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -30,19 +31,23 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import cn.ucai.superwechat.applib.controller.HXSDKHelper;
-
-import com.easemob.chat.EMGroup;
-import com.easemob.chat.EMGroupManager;
-import cn.ucai.superwechat.R;
-import cn.ucai.superwechat.adapter.GroupAdapter;
-
 import com.easemob.util.EMLog;
+
+import java.util.ArrayList;
+
+import cn.ucai.superwechat.R;
+import cn.ucai.superwechat.SuperWeChatApplication;
+import cn.ucai.superwechat.adapter.GroupAdapter;
+import cn.ucai.superwechat.applib.controller.HXSDKHelper;
+import cn.ucai.superwechat.bean.GroupBean;
 
 public class GroupsActivity extends BaseActivity {
 	public static final String TAG = "GroupsActivity";
+    static final int REQUEST_NEW_GROUP=0;
+    static final int REQUEST_NEW_PUBLIC_GROUP=1;
+    static final int REQUEST_ENTER_CHATACTIVITY=2;
 	private ListView groupListView;
-	protected List<EMGroup> grouplist;
+	protected ArrayList<GroupBean> grouplist;
 	private GroupAdapter groupAdapter;
 	private InputMethodManager inputMethodManager;
 	public static GroupsActivity instance;
@@ -50,6 +55,8 @@ public class GroupsActivity extends BaseActivity {
 	private View progressBar;
 	private SwipeRefreshLayout swipeRefreshLayout;
 	Handler handler = new Handler();
+
+    GroupChangedReceiver mGroupListChangedReceiver;
 
 	class SyncListener implements HXSDKHelper.HXSyncListener {
 		@Override
@@ -87,7 +94,7 @@ public class GroupsActivity extends BaseActivity {
 
 		instance = this;
 		inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-		grouplist = EMGroupManager.getInstance().getAllGroups();
+		grouplist = SuperWeChatApplication.getInstance().getGroupList();
 		groupListView = (ListView) findViewById(R.id.list);
 		
 		swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_layout);
@@ -109,17 +116,17 @@ public class GroupsActivity extends BaseActivity {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				if (position == 1) {
 					// 新建群聊
-					startActivityForResult(new Intent(GroupsActivity.this, NewGroupActivity.class), 0);
+					startActivityForResult(new Intent(GroupsActivity.this, NewGroupActivity.class), REQUEST_NEW_GROUP);
 				} else if (position == 2) {
 					// 添加公开群
-					startActivityForResult(new Intent(GroupsActivity.this, PublicGroupsActivity.class), 0);
+					startActivityForResult(new Intent(GroupsActivity.this, PublicGroupsActivity.class), REQUEST_NEW_PUBLIC_GROUP);
 				} else {
 					// 进入群聊
 					Intent intent = new Intent(GroupsActivity.this, ChatActivity.class);
 					// it is group chat
 					intent.putExtra("chatType", ChatActivity.CHATTYPE_GROUP);
-					intent.putExtra("groupId", groupAdapter.getItem(position - 3).getGroupId());
-					startActivityForResult(intent, 0);
+					intent.putExtra("groupId", groupAdapter.getItem(position).getGroupId());
+					startActivityForResult(intent, REQUEST_ENTER_CHATACTIVITY);
 				}
 			}
 
@@ -149,6 +156,7 @@ public class GroupsActivity extends BaseActivity {
 		}
 		
 		refresh();
+        registerGroupChangedReceiver();
 	}
 
 	/**
@@ -161,12 +169,22 @@ public class GroupsActivity extends BaseActivity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-	}
+        if(RESULT_OK!=resultCode){
+            return;
+        }
+        switch (requestCode) {
+            case REQUEST_NEW_GROUP:
+                GroupBean group=(GroupBean) data.getSerializableExtra("group");
+                groupAdapter.addItem(group);//将新建的群显示在列表中
+                break;
+        }
+
+    }
 
 	@Override
 	public void onResume() {
 		super.onResume();
-		grouplist = EMGroupManager.getInstance().getAllGroups();
+		grouplist = SuperWeChatApplication.getInstance().getGroupList();
 		groupAdapter = new GroupAdapter(this, 1, grouplist);
 		groupListView.setAdapter(groupAdapter);
 		groupAdapter.notifyDataSetChanged();
@@ -178,13 +196,16 @@ public class GroupsActivity extends BaseActivity {
 			HXSDKHelper.getInstance().removeSyncGroupListener(syncListener);
 			syncListener = null;
 		}
+        if(mGroupListChangedReceiver !=null){
+            unregisterReceiver(mGroupListChangedReceiver);
+        }
 		super.onDestroy();
 		instance = null;
 	}
 	
 	public void refresh() {
 		if (groupListView != null && groupAdapter != null) {
-			grouplist = EMGroupManager.getInstance().getAllGroups();
+			grouplist = SuperWeChatApplication.getInstance().getGroupList();
 			groupAdapter = new GroupAdapter(GroupsActivity.this, 1,
 					grouplist);
 			groupListView.setAdapter(groupAdapter);
@@ -200,4 +221,25 @@ public class GroupsActivity extends BaseActivity {
 	public void back(View view) {
 		finish();
 	}
+
+    class GroupChangedReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(groupAdapter.getCount()==3 && intent.getAction().equals("update_group")){
+                ArrayList<GroupBean> groupList=SuperWeChatApplication.getInstance().getGroupList();
+                if(!groupList.containsAll(groupList)){
+                    groupAdapter.initList(groupList);
+                }
+            }
+        }
+    }
+    /**
+     * 注册DownloadContactsTask下载群成功后发送的广播
+     */
+    private void registerGroupChangedReceiver() {
+        mGroupListChangedReceiver=new GroupChangedReceiver();
+        IntentFilter filter=new IntentFilter("update_group");
+        filter.addAction("update_group_name");
+        registerReceiver(mGroupListChangedReceiver,filter);
+    }
 }
