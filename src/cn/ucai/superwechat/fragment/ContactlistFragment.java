@@ -388,10 +388,9 @@ public class ContactlistFragment extends Fragment {
                         try {
                             for(ContactBean contact : deleteContacts) {
                                 String path = new ApiParams()
-                                        .with(I.KEY_REQUEST, I.REQUEST_DELETE_CONTACT)
                                         .with(I.Contact.MYUID, contact.getMyuid() + "")
                                         .with(I.Contact.CUID, contact.getCuid() + "")
-                                        .getUrl(SuperWeChatApplication.SERVER_ROOT);
+										.getRequestUrl(I.REQUEST_DELETE_CONTACT);
                                 Log.e(TAG,"fragment delete contacts,path="+path);
                                 mContext.executeRequest(new GsonRequest<Boolean>(path, Boolean.class,
                                         responseDeleteContactListener(), mContext.errorListener()));

@@ -127,7 +127,7 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer{
 			//群聊item
 		    holder.nameTextview.setText(user.getNick());
 		    holder.avatar.setDefaultImageResId(R.drawable.groups_icon);
-            holder.avatar.setErrorImageResId(R.drawable.group_icon);
+            holder.avatar.setErrorImageResId(R.drawable.groups_icon);
             holder.avatar.setImageUrl("", RequestManager.getImageLoader());
 		}else{
 		    holder.nameTextview.setText(user.getNick());
