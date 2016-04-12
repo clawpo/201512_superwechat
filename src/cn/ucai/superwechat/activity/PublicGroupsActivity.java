@@ -67,33 +67,21 @@ public class PublicGroupsActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_public_groups);
         mContext = this;
-
-		pb = (ProgressBar) findViewById(R.id.progressBar);
-		listView = (ListView) findViewById(R.id.list);
-		groupsList = new ArrayList<GroupBean>();
-        searchBtn = (Button) findViewById(R.id.btn_search);
-		
-		View footView = getLayoutInflater().inflate(R.layout.listview_footer_view, null);
-        footLoadingLayout = (LinearLayout) footView.findViewById(R.id.loading_layout);
-        footLoadingPB = (ProgressBar)footView.findViewById(R.id.loading_bar);
-        footLoadingText = (TextView) footView.findViewById(R.id.loading_text);
-        listView.addFooterView(footView, null, false);
-        footLoadingLayout.setVisibility(View.GONE);
-        
+        groupsList = new ArrayList<GroupBean>();
+        initView();
         //获取及显示数据
         loadAndShowData();
-        
-        //设置item点击事件
-        listView.setOnItemClickListener(new OnItemClickListener() {
+        setListener();
+	}
 
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startActivity(new Intent(PublicGroupsActivity.this, GroupSimpleDetailActivity.class).
-                        putExtra("groupinfo", adapter.getItem(position)));
-            }
-        });
+    private void setListener() {
+        setItemClickListener();
+        setScrollListener();
+    }
+
+    private void setScrollListener() {
         listView.setOnScrollListener(new OnScrollListener() {
-            
+
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
                 if(scrollState == OnScrollListener.SCROLL_STATE_IDLE){
@@ -107,16 +95,40 @@ public class PublicGroupsActivity extends BaseActivity {
                     }
                 }
             }
-            
+
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                
+
             }
         });
-        
-	}
-	
-	/**
+    }
+
+    private void setItemClickListener() {
+        //设置item点击事件
+        listView.setOnItemClickListener(new OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                startActivity(new Intent(PublicGroupsActivity.this, GroupSimpleDetailActivity.class).
+                        putExtra("groupinfo", adapter.getItem(position)));
+            }
+        });
+    }
+
+    private void initView() {
+        pb = (ProgressBar) findViewById(R.id.progressBar);
+        listView = (ListView) findViewById(R.id.list);
+        searchBtn = (Button) findViewById(R.id.btn_search);
+
+        View footView = getLayoutInflater().inflate(R.layout.listview_footer_view, null);
+        footLoadingLayout = (LinearLayout) footView.findViewById(R.id.loading_layout);
+        footLoadingPB = (ProgressBar)footView.findViewById(R.id.loading_bar);
+        footLoadingText = (TextView) footView.findViewById(R.id.loading_text);
+        listView.addFooterView(footView, null, false);
+        footLoadingLayout.setVisibility(View.GONE);
+    }
+
+    /**
 	 * 搜索
 	 * @param view
 	 */
@@ -130,39 +142,31 @@ public class PublicGroupsActivity extends BaseActivity {
             public void run() {
                 try {
                     isLoading = true;
-//                    final EMCursorResult<EMGroupInfo> result = EMGroupManager.getInstance().getPublicGroupsFromServer(pagesize, cursor);
                     ArrayList<GroupBean> publicGroupList = SuperWeChatApplication.getInstance().getPublicGroupList();
                     groupsList.addAll(publicGroupList);
-                    //获取group list
-//                    final List<EMGroupInfo> returnGroups = result.getData();
-//                    runOnUiThread(new Runnable() {
-//
-//                        public void run() {
-                            searchBtn.setVisibility(View.VISIBLE);
-                            if(publicGroupList.size() != 0){
-                                //获取cursor
-                                int count = publicGroupList.size();
-                                if(groupsList.size() == (pagesize*(pageId+1)))
-                                    footLoadingLayout.setVisibility(View.VISIBLE);
-                            }
-                            if(isFirstLoading){
-                                pb.setVisibility(View.INVISIBLE);
-                                isFirstLoading = false;
-                                //设置adapter
-                                adapter = new GroupsAdapter(PublicGroupsActivity.this, 1, groupsList);
-                                listView.setAdapter(adapter);
-                            }else{
-                                if(groupsList.size() < (pagesize*(pageId+1))){
-                                    hasMoreData = false;
-                                    footLoadingLayout.setVisibility(View.VISIBLE);
-                                    footLoadingPB.setVisibility(View.GONE);
-                                    footLoadingText.setText("No more data");
-                                }
-                                adapter.notifyDataSetChanged();
-                            }
-                            isLoading = false;
-//                        }
-//                    });
+                    searchBtn.setVisibility(View.VISIBLE);
+                    if(publicGroupList.size() != 0){
+                        //获取cursor
+                        int count = publicGroupList.size();
+                        if(groupsList.size() == (pagesize*(pageId+1)))
+                            footLoadingLayout.setVisibility(View.VISIBLE);
+                    }
+                    if(isFirstLoading){
+                        pb.setVisibility(View.INVISIBLE);
+                        isFirstLoading = false;
+                        //设置adapter
+                        adapter = new GroupsAdapter(PublicGroupsActivity.this, 1, groupsList);
+                        listView.setAdapter(adapter);
+                    }else{
+                        if(groupsList.size() < (pagesize*(pageId+1))){
+                            hasMoreData = false;
+                            footLoadingLayout.setVisibility(View.VISIBLE);
+                            footLoadingPB.setVisibility(View.GONE);
+                            footLoadingText.setText("No more data");
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+                    isLoading = false;
                 } catch (Exception e) {
                     e.printStackTrace();
                     runOnUiThread(new Runnable() {

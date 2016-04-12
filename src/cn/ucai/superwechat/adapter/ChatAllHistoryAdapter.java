@@ -14,7 +14,6 @@
 package cn.ucai.superwechat.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -96,9 +95,6 @@ public class ChatAllHistoryAdapter extends ArrayAdapter<EMConversation> {
 		String username = conversation.getUserName();
 		if (conversation.getType() == EMConversationType.GroupChat) {
             // 群聊消息，显示群聊头像
-//			holder.avatar.setDefaultImageResId(R.drawable.group_icon);
-//			holder.avatar.setImageUrl("", RequestManager.getImageLoader());
-//			holder.avatar.setErrorImageResId(R.drawable.group_icon);
 			EMGroup group = EMGroupManager.getInstance().getGroup(username);
 			holder.name.setText(group != null ? group.getGroupName() : username);
             UserUtils.setGroupAvatar(group.getGroupName(),holder.avatar);
