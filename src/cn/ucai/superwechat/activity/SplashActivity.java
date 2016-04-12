@@ -20,6 +20,7 @@ import cn.ucai.superwechat.db.UserDao;
 import cn.ucai.superwechat.task.DownloadAllGroupTask;
 import cn.ucai.superwechat.task.DownloadContactListTask;
 import cn.ucai.superwechat.task.DownloadContactTask;
+import cn.ucai.superwechat.task.DownloadPublicGroupTask;
 
 /**
  * 开屏页
@@ -62,6 +63,8 @@ public class SplashActivity extends BaseActivity {
             new DownloadContactListTask(mContext,userName,0,20).execute();
             //下载群组列表
             new DownloadAllGroupTask(mContext,userName).execute();
+			//下载公开群组列表
+			new DownloadPublicGroupTask(mContext,userName,0,20).execute();
             new Thread(new Runnable() {
                 public void run() {
                         // ** 免登陆情况 加载所有本地群和会话

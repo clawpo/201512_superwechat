@@ -55,6 +55,7 @@ import cn.ucai.superwechat.listener.OnSetAvatarListener;
 import cn.ucai.superwechat.task.DownloadAllGroupTask;
 import cn.ucai.superwechat.task.DownloadContactListTask;
 import cn.ucai.superwechat.task.DownloadContactTask;
+import cn.ucai.superwechat.task.DownloadPublicGroupTask;
 import cn.ucai.superwechat.utils.CommonUtils;
 import cn.ucai.superwechat.utils.MD5;
 import cn.ucai.superwechat.utils.NetUtil;
@@ -329,6 +330,7 @@ public class LoginActivity extends BaseActivity {
                     new DownloadContactTask(mContext,currentUsername,0,20).execute();
                     new DownloadContactListTask(mContext,currentUsername,0,20).execute();
                     new DownloadAllGroupTask(mContext,currentUsername).execute();
+					new DownloadPublicGroupTask(mContext,currentUsername,0,20).execute();
                 }
             });
             // 处理好友和群组
