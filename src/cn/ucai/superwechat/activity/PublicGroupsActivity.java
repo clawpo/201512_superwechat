@@ -17,7 +17,9 @@ package cn.ucai.superwechat.activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +46,7 @@ import cn.ucai.superwechat.task.DownloadPublicGroupTask;
 import cn.ucai.superwechat.utils.UserUtils;
 
 public class PublicGroupsActivity extends BaseActivity {
+    public static final String TAG = PublicGroupsActivity.class.getName();
     Context mContext;
 	private ProgressBar pb;
 	private ListView listView;
@@ -70,13 +73,14 @@ public class PublicGroupsActivity extends BaseActivity {
         groupsList = new ArrayList<GroupBean>();
         initView();
         //获取及显示数据
-        loadAndShowData();
+//        loadAndShowData();
         setListener();
 	}
 
     private void setListener() {
         setItemClickListener();
         setScrollListener();
+        registerPublicGroupChangedReceiver();
     }
 
     private void setScrollListener() {
@@ -89,7 +93,7 @@ public class PublicGroupsActivity extends BaseActivity {
                         int lasPos = view.getLastVisiblePosition();
                         if(hasMoreData && !isLoading && lasPos == listView.getCount()-1){
                             pageId++;
-                            new DownloadPublicGroupTask(mContext,"",pageId,pagesize).execute();
+                            new DownloadPublicGroupTask(mContext,"",(pageId*pagesize),pagesize).execute();
                             loadAndShowData();
                         }
                     }
@@ -137,18 +141,24 @@ public class PublicGroupsActivity extends BaseActivity {
 	}
 	
 	private void loadAndShowData(){
-	    new Thread(new Runnable() {
-
-            public void run() {
+//	    new Thread(new Runnable() {
+//
+//            public void run() {
                 try {
                     isLoading = true;
                     ArrayList<GroupBean> publicGroupList = SuperWeChatApplication.getInstance().getPublicGroupList();
-                    groupsList.addAll(publicGroupList);
+                    Log.e(TAG,"loadAndShowData,publicGroupList="+publicGroupList.size()+",groupsList="+groupsList.size());
+                    for (GroupBean g: publicGroupList){
+                        if(!groupsList.contains(g)){
+                            groupsList.add(g);
+                        }
+                    }
+                    Log.e(TAG,"loadAndShowData,add over groupsList="+groupsList.size());
+//                    groupsList.addAll(publicGroupList);
                     searchBtn.setVisibility(View.VISIBLE);
                     if(publicGroupList.size() != 0){
                         //获取cursor
-                        int count = publicGroupList.size();
-                        if(groupsList.size() == (pagesize*(pageId+1)))
+                        if(groupsList.size() == publicGroupList.size())
                             footLoadingLayout.setVisibility(View.VISIBLE);
                     }
                     if(isFirstLoading){
@@ -158,7 +168,7 @@ public class PublicGroupsActivity extends BaseActivity {
                         adapter = new GroupsAdapter(PublicGroupsActivity.this, 1, groupsList);
                         listView.setAdapter(adapter);
                     }else{
-                        if(groupsList.size() < (pagesize*(pageId+1))){
+                        if(groupsList.size() < (pageId+1)*pagesize){
                             hasMoreData = false;
                             footLoadingLayout.setVisibility(View.VISIBLE);
                             footLoadingPB.setVisibility(View.GONE);
@@ -178,10 +188,10 @@ public class PublicGroupsActivity extends BaseActivity {
                         }
                     });
                 }
-            }
-        }).start();
+//            }
+//        }).start();
 	}
-
+    PublicGroupChangedReceiver mPublicGroupChangedReceiver;
 
     class PublicGroupChangedReceiver extends BroadcastReceiver{
 
@@ -189,6 +199,11 @@ public class PublicGroupsActivity extends BaseActivity {
         public void onReceive(Context context, Intent intent) {
             loadAndShowData();
         }
+    }
+    private void registerPublicGroupChangedReceiver(){
+        mPublicGroupChangedReceiver = new PublicGroupChangedReceiver();
+        IntentFilter filter = new IntentFilter("update_public_group");
+        registerReceiver(mPublicGroupChangedReceiver,filter);
     }
 	/**
 	 * adapter
@@ -237,4 +252,12 @@ public class PublicGroupsActivity extends BaseActivity {
 	public void back(View view){
 		finish();
 	}
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(mPublicGroupChangedReceiver!=null){
+            unregisterReceiver(mPublicGroupChangedReceiver);
+        }
+    }
 }
