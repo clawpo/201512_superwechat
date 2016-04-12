@@ -68,6 +68,7 @@ import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.SuperWeChatApplication;
 import cn.ucai.superwechat.applib.controller.HXSDKHelper;
 import cn.ucai.superwechat.bean.ContactBean;
+import cn.ucai.superwechat.bean.GroupBean;
 import cn.ucai.superwechat.bean.UserBean;
 import cn.ucai.superwechat.data.ApiParams;
 import cn.ucai.superwechat.data.GsonRequest;
@@ -916,8 +917,19 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 
 		@Override
 		public void onApplicationAccept(String groupId, String groupName, String accepter) {
+            String username = SuperWeChatApplication.getInstance().getUserName();
 
-			String st4 = getResources().getString(R.string.Agreed_to_your_group_chat_application);
+            try {
+                String path = new ApiParams().with(I.Group.GROUP_NAME, groupName)
+                        .with(I.Group.MEMBERS, username)
+                        .getRequestUrl(I.REQUEST_ADD_GROUP_MEMBER);
+                executeRequest(new GsonRequest<GroupBean>(path,GroupBean.class,
+                        responseAddGroupMemberListener(),errorListener()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            String st4 = getResources().getString(R.string.Agreed_to_your_group_chat_application);
 			// 加群申请被同意
 			EMMessage msg = EMMessage.createReceiveMessage(Type.TXT);
 			msg.setChatType(ChatType.GroupChat);
@@ -943,7 +955,49 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 			});
 		}
 
-		@Override
+        private Response.Listener<GroupBean> responseAddGroupMemberListener() {
+            return new Response.Listener<GroupBean>() {
+                @Override
+                public void onResponse(GroupBean groupBean) {
+                    if(groupBean!=null){
+                        ArrayList<GroupBean> groupList = SuperWeChatApplication.getInstance().getGroupList();
+                        groupList.add(groupBean);
+                        HashMap<String, ArrayList<UserBean>> groupMembers =
+                                SuperWeChatApplication.getInstance().getGroupMembers();
+                        ArrayList<UserBean> members = groupMembers.get(groupBean.getGroupId());
+                        if(members==null){
+                            try {
+                                String path = new ApiParams()
+                                        .with(I.Group.GROUP_ID, groupBean.getGroupId())
+                                        .getRequestUrl(I.REQUEST_DOWNLOAD_GROUP_MEMBERS);
+                                executeRequest(new GsonRequest<UserBean[]>(path,UserBean[].class,
+                                        responseDownloadGroupMembersListener(groupBean.getGroupId()), errorListener()));
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }else{
+                            members.add(SuperWeChatApplication.getInstance().getUser());
+                        }
+                    }
+                }
+            };
+        }
+
+        private Response.Listener<UserBean[]> responseDownloadGroupMembersListener(final String groupId) {
+            return new Response.Listener<UserBean[]>() {
+                @Override
+                public void onResponse(UserBean[] userBeen) {
+                    if(userBeen!=null){
+                        HashMap<String, ArrayList<UserBean>> groupMembers =
+                                SuperWeChatApplication.getInstance().getGroupMembers();
+                        ArrayList<UserBean> members = groupMembers.get(groupId);
+                        members.add(SuperWeChatApplication.getInstance().getUser());
+                    }
+                }
+            };
+        }
+
+        @Override
 		public void onApplicationDeclined(String groupId, String groupName, String decliner, String reason) {
 			// 加群申请被拒绝，demo未实现
 		}

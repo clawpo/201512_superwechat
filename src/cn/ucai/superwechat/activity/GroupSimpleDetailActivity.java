@@ -17,7 +17,6 @@ package cn.ucai.superwechat.activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -98,6 +97,8 @@ public class GroupSimpleDetailActivity extends BaseActivity {
             @Override
             public void onResponse(GroupBean groupBean) {
                 if(groupBean!=null){
+                    group = groupBean;
+                    groupid = group.getGroupId();
                     showGroupDetail();
                 }else{
                     final String st1 = getResources().getString(R.string.Failed_to_get_group_chat_information);
