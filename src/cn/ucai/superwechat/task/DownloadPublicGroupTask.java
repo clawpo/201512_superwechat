@@ -49,7 +49,6 @@ public class DownloadPublicGroupTask extends BaseActivity {
     }
 
     public void execute(){
-        Log.e(TAG,"responseDownloadPublicGroupListener,path="+path);
         executeRequest(new GsonRequest<GroupBean[]>(path,GroupBean[].class,
                 responseDownloadPublicGroupListener(), errorListener()));
     }
@@ -61,17 +60,13 @@ public class DownloadPublicGroupTask extends BaseActivity {
                 if(groupList==null){
                     return;
                 }
-                Log.e(TAG,"responseDownloadPublicGroupListener,groupList.length="+groupList.length);
                 ArrayList<GroupBean> list = SuperWeChatApplication.getInstance().getPublicGroupList();
-                Log.e(TAG,"responseDownloadPublicGroupListener,getPublicGroupList.size="+list.size());
                 ArrayList<GroupBean> groups = Utils.array2List(groupList);
                 for(GroupBean g:groups){
                     if(!list.contains(g)){
                         list.add(g);
                     }
                 }
-//                list.addAll(groups);
-                Log.e(TAG,"responseDownloadPublicGroupListener,getPublicGroupList.size="+list.size());
                 Intent intent = new Intent("update_public_group");
                 mContext.sendStickyBroadcast(intent);
             }

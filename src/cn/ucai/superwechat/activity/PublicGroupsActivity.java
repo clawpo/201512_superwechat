@@ -113,6 +113,7 @@ public class PublicGroupsActivity extends BaseActivity {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.e("main","publicgroupsactivity,setitemclicklistener,getitem="+adapter.getItem(position));
                 startActivity(new Intent(PublicGroupsActivity.this, GroupSimpleDetailActivity.class).
                         putExtra("groupinfo", adapter.getItem(position)));
             }
@@ -141,55 +142,47 @@ public class PublicGroupsActivity extends BaseActivity {
 	}
 	
 	private void loadAndShowData(){
-//	    new Thread(new Runnable() {
-//
-//            public void run() {
-                try {
-                    isLoading = true;
-                    ArrayList<GroupBean> publicGroupList = SuperWeChatApplication.getInstance().getPublicGroupList();
-                    Log.e(TAG,"loadAndShowData,publicGroupList="+publicGroupList.size()+",groupsList="+groupsList.size());
-                    for (GroupBean g: publicGroupList){
-                        if(!groupsList.contains(g)){
-                            groupsList.add(g);
-                        }
-                    }
-                    Log.e(TAG,"loadAndShowData,add over groupsList="+groupsList.size());
-//                    groupsList.addAll(publicGroupList);
-                    searchBtn.setVisibility(View.VISIBLE);
-                    if(publicGroupList.size() != 0){
-                        //获取cursor
-                        if(groupsList.size() == publicGroupList.size())
-                            footLoadingLayout.setVisibility(View.VISIBLE);
-                    }
-                    if(isFirstLoading){
-                        pb.setVisibility(View.INVISIBLE);
-                        isFirstLoading = false;
-                        //设置adapter
-                        adapter = new GroupsAdapter(PublicGroupsActivity.this, 1, groupsList);
-                        listView.setAdapter(adapter);
-                    }else{
-                        if(groupsList.size() < (pageId+1)*pagesize){
-                            hasMoreData = false;
-                            footLoadingLayout.setVisibility(View.VISIBLE);
-                            footLoadingPB.setVisibility(View.GONE);
-                            footLoadingText.setText("No more data");
-                        }
-                        adapter.notifyDataSetChanged();
-                    }
-                    isLoading = false;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    runOnUiThread(new Runnable() {
-                        public void run() {
-                            isLoading = false;
-                            pb.setVisibility(View.INVISIBLE);
-                            footLoadingLayout.setVisibility(View.GONE);
-                            Toast.makeText(PublicGroupsActivity.this, "加载数据失败，请检查网络或稍后重试", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+        try {
+            isLoading = true;
+            ArrayList<GroupBean> publicGroupList = SuperWeChatApplication.getInstance().getPublicGroupList();
+            for (GroupBean g: publicGroupList){
+                if(!groupsList.contains(g)){
+                    groupsList.add(g);
                 }
-//            }
-//        }).start();
+            }
+            searchBtn.setVisibility(View.VISIBLE);
+            if(publicGroupList.size() != 0){
+                //获取cursor
+                if(groupsList.size() == publicGroupList.size())
+                    footLoadingLayout.setVisibility(View.VISIBLE);
+            }
+            if(isFirstLoading){
+                pb.setVisibility(View.INVISIBLE);
+                isFirstLoading = false;
+                //设置adapter
+                adapter = new GroupsAdapter(PublicGroupsActivity.this, 1, groupsList);
+                listView.setAdapter(adapter);
+            }else{
+                if(groupsList.size() < (pageId+1)*pagesize){
+                    hasMoreData = false;
+                    footLoadingLayout.setVisibility(View.VISIBLE);
+                    footLoadingPB.setVisibility(View.GONE);
+                    footLoadingText.setText("No more data");
+                }
+                adapter.notifyDataSetChanged();
+            }
+            isLoading = false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    isLoading = false;
+                    pb.setVisibility(View.INVISIBLE);
+                    footLoadingLayout.setVisibility(View.GONE);
+                    Toast.makeText(PublicGroupsActivity.this, "加载数据失败，请检查网络或稍后重试", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
 	}
     PublicGroupChangedReceiver mPublicGroupChangedReceiver;
 
