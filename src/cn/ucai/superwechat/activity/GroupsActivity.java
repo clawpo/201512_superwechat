@@ -101,6 +101,7 @@ public class GroupsActivity extends BaseActivity {
 		}
 		refresh();
         registerGroupChangedReceiver();
+        registerDeleteGroupMemberReceiver();
 	}
 
     private void setListener() {
@@ -216,6 +217,9 @@ public class GroupsActivity extends BaseActivity {
         if(mGroupListChangedReceiver !=null){
             unregisterReceiver(mGroupListChangedReceiver);
         }
+        if(mDeleteGroupMemberReceiver!=null){
+            unregisterReceiver(mDeleteGroupMemberReceiver);
+        }
 		super.onDestroy();
 		instance = null;
 	}
@@ -258,5 +262,19 @@ public class GroupsActivity extends BaseActivity {
         IntentFilter filter=new IntentFilter("update_group");
         filter.addAction("update_group_name");
         registerReceiver(mGroupListChangedReceiver,filter);
+    }
+
+    class DeleteGroupMemberReceiver extends BroadcastReceiver{
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            GroupBean group=(GroupBean) intent.getSerializableExtra("group");
+            groupAdapter.remove(group);
+        }
+    }
+    DeleteGroupMemberReceiver mDeleteGroupMemberReceiver;
+    private void registerDeleteGroupMemberReceiver() {
+        mDeleteGroupMemberReceiver=new DeleteGroupMemberReceiver();
+        IntentFilter filter=new IntentFilter("exit_group");
+        registerReceiver(mDeleteGroupMemberReceiver, filter);
     }
 }

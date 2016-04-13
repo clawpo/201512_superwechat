@@ -345,15 +345,26 @@ public class GroupDetailsActivity extends BaseActivity implements OnClickListene
 			public void run() {
 				try {
 				    EMGroupManager.getInstance().exitFromGroup(groupId);
-					runOnUiThread(new Runnable() {
-						public void run() {
-							progressDialog.dismiss();
-							setResult(RESULT_OK);
-							finish();
-							if(ChatActivity.activityInstance != null)
-							    ChatActivity.activityInstance.finish();
-						}
-					});
+                    String username=SuperWeChatApplication.getInstance().getUserName();
+                    String path = new ApiParams().with(I.Group.GROUP_NAME, mGroup.getName())
+                            .with(I.Group.MEMBERS, username)
+                            .getRequestUrl(I.REQUEST_DELETE_GROUP_MEMBER);
+                    executeRequest(new GsonRequest<Boolean>(path, Boolean.class,
+                            new Response.Listener<Boolean>() {
+                                @Override
+                                public void onResponse(Boolean aBoolean) {
+                                    if(aBoolean){
+                                        progressDialog.dismiss();
+                                        setResult(RESULT_OK);
+                                        Intent intent=new Intent("exit_group");
+                                        intent.putExtra("group", mGroup);
+                                        sendStickyBroadcast(intent);
+                                        finish();
+                                        if(ChatActivity.activityInstance != null)
+                                            ChatActivity.activityInstance.finish();
+                                    }
+                                }
+                            },errorListener()));
 				} catch (final Exception e) {
 					runOnUiThread(new Runnable() {
 						public void run() {
