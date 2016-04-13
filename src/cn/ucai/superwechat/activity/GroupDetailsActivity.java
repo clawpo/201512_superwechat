@@ -67,11 +67,12 @@ public class GroupDetailsActivity extends BaseActivity implements OnClickListene
 
 	private ExpandGridView userGridview;
 	private String groupId;
-    ArrayList<UserBean> members;
+    ArrayList<UserBean> mGroupMembers;
 	private ProgressBar loadingPB;
 	private Button exitBtn;
 	private Button deleteBtn;
-	private GroupBean group;
+	private EMGroup group;
+	private GroupBean mGroup;
 	private GridAdapter adapter;
 	private int referenceWidth;
 	private int referenceHeight;
@@ -103,13 +104,9 @@ public class GroupDetailsActivity extends BaseActivity implements OnClickListene
 	    
 	    // 获取传过来的groupid
         groupId = getIntent().getStringExtra("groupId");
-//        group = EMGroupManager.getInstance().getGroup(groupId);
-        ArrayList<GroupBean> groupList = SuperWeChatApplication.getInstance().getGroupList();
-        for (GroupBean g:groupList){
-            if (g.getGroupId().equals(groupId)){
-                group = g;
-            }
-        }
+        mGroup=(GroupBean) getIntent().getSerializableExtra("group");
+        mGroupMembers = SuperWeChatApplication.getInstance().getGroupMembers().get(groupId);
+        group = EMGroupManager.getInstance().getGroup(groupId);
 
         // we are not supposed to show the group if we don't find the group
         if(group == null){
@@ -156,13 +153,12 @@ public class GroupDetailsActivity extends BaseActivity implements OnClickListene
 			exitBtn.setVisibility(View.GONE);
 			deleteBtn.setVisibility(View.VISIBLE);
 		}
-        members = new ArrayList<UserBean>();
-        members.addAll(UserUtils.getGroupMembersInfo(groupId));
 		
-		((TextView) findViewById(R.id.group_name)).setText(group.getName() + "(" + members.size() + st);
-
+		((TextView) findViewById(R.id.group_name)).setText(group.getGroupName() + "(" + group.getAffiliationsCount() + st);
 		
-		adapter = new GridAdapter(this, R.layout.grid, members);
+		List<String> members = new ArrayList<String>();
+		members.addAll(group.getMembers());
+		adapter = new GridAdapter(this, R.layout.grid, mGroupMembers);
 		userGridview.setAdapter(adapter);
 
 		// 保证每次进详情看到的都是最新的group
@@ -250,8 +246,8 @@ public class GroupDetailsActivity extends BaseActivity implements OnClickListene
 							    EMGroupManager.getInstance().changeGroupName(groupId, returnData);
 								runOnUiThread(new Runnable() {
 									public void run() {
-										((TextView) findViewById(R.id.group_name))
-                                                .setText(returnData + "(" + members.size()+ st);
+										((TextView) findViewById(R.id.group_name)).setText(returnData + "(" + group.getAffiliationsCount()
+												+ st);
 										progressDialog.dismiss();
 										Toast.makeText(getApplicationContext(), st6, Toast.LENGTH_SHORT).show();
 									}
@@ -308,7 +304,6 @@ public class GroupDetailsActivity extends BaseActivity implements OnClickListene
 //        List<String> members = new ArrayList<String>();
 //        members.addAll(group.getMembers());
 //        adapter.addAll(members);
-//
         adapter.notifyDataSetChanged();
 	}
 	
@@ -367,9 +362,7 @@ public class GroupDetailsActivity extends BaseActivity implements OnClickListene
 					runOnUiThread(new Runnable() {
 						public void run() {
 							progressDialog.dismiss();
-							Toast.makeText(getApplicationContext(),
-                                    getResources().getString(R.string.Exit_the_group_chat_failure)
-                                    + " " + e.getMessage(), Toast.LENGTH_LONG).show();
+							Toast.makeText(getApplicationContext(), getResources().getString(R.string.Exit_the_group_chat_failure) + " " + e.getMessage(), Toast.LENGTH_LONG).show();
 						}
 					});
 				}
@@ -429,8 +422,8 @@ public class GroupDetailsActivity extends BaseActivity implements OnClickListene
 					runOnUiThread(new Runnable() {
 						public void run() {
 						    refreshMembers();
-							((TextView) findViewById(R.id.group_name))
-                                    .setText(group.getName() + "(" + members.size()+ st);
+							((TextView) findViewById(R.id.group_name)).setText(group.getGroupName() + "(" + group.getAffiliationsCount()
+									+ st);
 							progressDialog.dismiss();
 						}
 					});
@@ -534,7 +527,7 @@ public class GroupDetailsActivity extends BaseActivity implements OnClickListene
 			break;
 
 		case R.id.rl_change_group_name:
-			startActivityForResult(new Intent(this, EditActivity.class).putExtra("data", group.getName()), REQUEST_CODE_EDIT_GROUPNAME);
+			startActivityForResult(new Intent(this, EditActivity.class).putExtra("data", group.getGroupName()), REQUEST_CODE_EDIT_GROUPNAME);
 			break;
 
 		default:
@@ -578,6 +571,7 @@ public class GroupDetailsActivity extends BaseActivity implements OnClickListene
 			    holder = (ViewHolder) convertView.getTag();
 			}
 			final LinearLayout button = (LinearLayout) convertView.findViewById(R.id.button_avatar);
+			String currentUserName=SuperWeChatApplication.getInstance().getUserName();
 			// 最后一个item，减人按钮
 			if (position == getCount() - 1) {
 			    holder.textView.setText("");
@@ -587,7 +581,7 @@ public class GroupDetailsActivity extends BaseActivity implements OnClickListene
                 holder.avatar.setErrorImageResId(R.drawable.smiley_minus_btn);
 //				button.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.smiley_minus_btn, 0, 0);
 				// 如果不是创建者或者没有相应权限，不提供加减人按钮
-				if (!group.getOwner().equals(EMChatManager.getInstance().getCurrentUser())) {
+				if (!group.getOwner().equals(currentUserName)) {
 					// if current user is not group admin, hide add/remove btn
 					convertView.setVisibility(View.INVISIBLE);
 				} else { // 显示删除按钮
@@ -616,7 +610,7 @@ public class GroupDetailsActivity extends BaseActivity implements OnClickListene
                 holder.avatar.setErrorImageResId(R.drawable.smiley_add_btn);
 //				button.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.smiley_add_btn, 0, 0);
 				// 如果不是创建者或者没有相应权限
-				if (!group.isExame() && !group.getOwner().equals(EMChatManager.getInstance().getCurrentUser())) {
+				if (!group.isAllowInvites() && !group.getOwner().equals(currentUserName)) {
 					// if current user is not group admin, hide add/remove btn
 					convertView.setVisibility(View.INVISIBLE);
 				} else {
@@ -711,9 +705,8 @@ public class GroupDetailsActivity extends BaseActivity implements OnClickListene
 										public void run() {
 											deleteDialog.dismiss();
 											refreshMembers();
-											((TextView) findViewById(R.id.group_name))
-                                                    .setText(group.getName()
-                                                            + "("+ members.size() + st);
+											((TextView) findViewById(R.id.group_name)).setText(group.getGroupName() + "("
+													+ group.getAffiliationsCount() + st);
 										}
 									});
 								} catch (final Exception e) {
@@ -776,8 +769,8 @@ public class GroupDetailsActivity extends BaseActivity implements OnClickListene
 
 					runOnUiThread(new Runnable() {
 						public void run() {
-							((TextView) findViewById(R.id.group_name)).setText(group.getName()
-                                    + "(" + members.size()+ ")");
+							((TextView) findViewById(R.id.group_name)).setText(group.getGroupName() + "(" + group.getAffiliationsCount()
+									+ ")");
 							loadingPB.setVisibility(View.INVISIBLE);
 							refreshMembers();
 							if (EMChatManager.getInstance().getCurrentUser().equals(group.getOwner())) {
@@ -790,15 +783,15 @@ public class GroupDetailsActivity extends BaseActivity implements OnClickListene
 								deleteBtn.setVisibility(View.GONE);
 							}
 
-//							// update block
-//							EMLog.d(TAG, "group msg is blocked:" + group.getMsgBlocked());
-//							if (group.isMsgBlocked()) {
-//								iv_switch_block_groupmsg.setVisibility(View.VISIBLE);
-//								iv_switch_unblock_groupmsg.setVisibility(View.INVISIBLE);
-//							} else {
-//								iv_switch_block_groupmsg.setVisibility(View.INVISIBLE);
-//								iv_switch_unblock_groupmsg.setVisibility(View.VISIBLE);
-//							}
+							// update block
+							EMLog.d(TAG, "group msg is blocked:" + group.getMsgBlocked());
+							if (group.isMsgBlocked()) {
+								iv_switch_block_groupmsg.setVisibility(View.VISIBLE);
+								iv_switch_unblock_groupmsg.setVisibility(View.INVISIBLE);
+							} else {
+								iv_switch_block_groupmsg.setVisibility(View.INVISIBLE);
+								iv_switch_unblock_groupmsg.setVisibility(View.VISIBLE);
+							}
 						}
 					});
 
