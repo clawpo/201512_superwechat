@@ -35,6 +35,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Response;
 import com.android.volley.toolbox.NetworkImageView;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMGroup;
@@ -46,10 +47,14 @@ import com.easemob.util.NetUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.ucai.superwechat.I;
 import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.SuperWeChatApplication;
 import cn.ucai.superwechat.bean.GroupBean;
+import cn.ucai.superwechat.bean.MessageBean;
 import cn.ucai.superwechat.bean.UserBean;
+import cn.ucai.superwechat.data.ApiParams;
+import cn.ucai.superwechat.data.GsonRequest;
 import cn.ucai.superwechat.data.RequestManager;
 import cn.ucai.superwechat.utils.UserUtils;
 import cn.ucai.superwechat.widget.ExpandGridView;
@@ -275,7 +280,7 @@ public class GroupDetailsActivity extends BaseActivity implements OnClickListene
 						    EMGroupManager.getInstance().blockUser(groupId, longClickUsername);
 							runOnUiThread(new Runnable() {
 								public void run() {
-								    refreshMembers();
+                                    adapter.notifyDataSetChanged();
 									progressDialog.dismiss();
 									Toast.makeText(getApplicationContext(), stsuccess, Toast.LENGTH_SHORT).show();
 								}
@@ -296,15 +301,6 @@ public class GroupDetailsActivity extends BaseActivity implements OnClickListene
 				break;
 			}
 		}
-	}
-
-	private void refreshMembers(){
-//	    adapter.clear();
-//
-//        List<String> members = new ArrayList<String>();
-//        members.addAll(group.getMembers());
-//        adapter.addAll(members);
-        adapter.notifyDataSetChanged();
 	}
 	
 	/**
@@ -415,14 +411,34 @@ public class GroupDetailsActivity extends BaseActivity implements OnClickListene
 					// 创建者调用add方法
 					if (EMChatManager.getInstance().getCurrentUser().equals(group.getOwner())) {
 					    EMGroupManager.getInstance().addUsersToGroup(groupId, newmembers);
+                        String path = new ApiParams().with(I.Group.GROUP_NAME, groupId)
+                                .with(I.Group.MEMBERS, newmembers.toString())
+                                .getRequestUrl(I.REQUEST_ADD_GROUP_MEMBERS);
+                        executeRequest(new GsonRequest<MessageBean>(path, MessageBean.class,
+                                new Response.Listener<MessageBean>() {
+                                    @Override
+                                    public void onResponse(MessageBean messageBean) {
+                                        if(messageBean.isSuccess()){
+                                            ArrayList<UserBean> contactList = SuperWeChatApplication.getInstance().getContactList();
+                                            for(int i=0;i<newmembers.length;i++){
+                                                UserBean user = new UserBean(newmembers[i]);
+                                                int id=contactList.indexOf(user);
+                                                if(id>=0){
+                                                    mGroupMembers.add(user);
+                                                }
+                                            }
+                                        }
+                                    }
+                                },errorListener()));
 					} else {
 						// 一般成员调用invite方法
 					    EMGroupManager.getInstance().inviteUser(groupId, newmembers, null);
 					}
 					runOnUiThread(new Runnable() {
 						public void run() {
-						    refreshMembers();
-							((TextView) findViewById(R.id.group_name)).setText(group.getGroupName() + "(" + group.getAffiliationsCount()
+                            adapter.notifyDataSetChanged();
+							((TextView) findViewById(R.id.group_name))
+                                    .setText(group.getGroupName() + "(" + group.getAffiliationsCount()
 									+ st);
 							progressDialog.dismiss();
 						}
@@ -704,7 +720,7 @@ public class GroupDetailsActivity extends BaseActivity implements OnClickListene
 										@Override
 										public void run() {
 											deleteDialog.dismiss();
-											refreshMembers();
+                                            adapter.notifyDataSetChanged();
 											((TextView) findViewById(R.id.group_name)).setText(group.getGroupName() + "("
 													+ group.getAffiliationsCount() + st);
 										}
@@ -772,7 +788,7 @@ public class GroupDetailsActivity extends BaseActivity implements OnClickListene
 							((TextView) findViewById(R.id.group_name)).setText(group.getGroupName() + "(" + group.getAffiliationsCount()
 									+ ")");
 							loadingPB.setVisibility(View.INVISIBLE);
-							refreshMembers();
+                            adapter.notifyDataSetChanged();
 							if (EMChatManager.getInstance().getCurrentUser().equals(group.getOwner())) {
 								// 显示解散按钮
 								exitBtn.setVisibility(View.GONE);
