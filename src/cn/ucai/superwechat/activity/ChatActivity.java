@@ -56,6 +56,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Response;
 import com.easemob.EMChatRoomChangeListener;
 import com.easemob.EMError;
 import com.easemob.EMEventListener;
@@ -86,18 +87,23 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cn.ucai.superwechat.SuperWeChatApplication;
 import cn.ucai.superwechat.DemoHXSDKHelper;
+import cn.ucai.superwechat.I;
 import cn.ucai.superwechat.R;
+import cn.ucai.superwechat.SuperWeChatApplication;
 import cn.ucai.superwechat.adapter.ExpressionAdapter;
 import cn.ucai.superwechat.adapter.ExpressionPagerAdapter;
 import cn.ucai.superwechat.adapter.MessageAdapter;
 import cn.ucai.superwechat.adapter.VoicePlayClickListener;
 import cn.ucai.superwechat.applib.controller.HXSDKHelper;
 import cn.ucai.superwechat.applib.model.GroupRemoveListener;
+import cn.ucai.superwechat.bean.UserBean;
+import cn.ucai.superwechat.data.ApiParams;
+import cn.ucai.superwechat.data.GsonRequest;
 import cn.ucai.superwechat.domain.RobotUser;
 import cn.ucai.superwechat.utils.CommonUtils;
 import cn.ucai.superwechat.utils.ImageUtils;
@@ -204,6 +210,8 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	public EMGroup group;
 	public EMChatRoom room;
 	public boolean isRobot;
+
+    ArrayList<UserBean> currentMembers;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -510,7 +518,27 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	}
 	
 	protected void onGroupViewCreation(){
-	    group = EMGroupManager.getInstance().getGroup(toChatUsername);
+
+		HashMap<String, ArrayList<UserBean>> groupMembers =
+				SuperWeChatApplication.getInstance().getGroupMembers();
+        ArrayList<UserBean> members = groupMembers.get(toChatUsername);
+        currentMembers = new ArrayList<UserBean>();
+        if(members==null){
+            try {
+                String path = new ApiParams()
+                        .with(I.Group.GROUP_ID, toChatUsername)
+                        .getRequestUrl(I.REQUEST_DOWNLOAD_GROUP_MEMBERS);
+                executeRequest(new GsonRequest<UserBean[]>(path,UserBean[].class,
+                        responseDownloadGroupMembersListener(), errorListener()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }else{
+            currentMembers.addAll(members);
+            adapter.notifyDataSetChanged();
+        }
+
+		group = EMGroupManager.getInstance().getGroup(toChatUsername);
         
         if (group != null){
             ((TextView) findViewById(R.id.name)).setText(group.getGroupName());
@@ -522,8 +550,24 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
         groupListener = new GroupListener();
         EMGroupManager.getInstance().addGroupChangeListener(groupListener);
 	}
-	
-	protected void onChatRoomViewCreation(){
+
+    private Response.Listener<UserBean[]> responseDownloadGroupMembersListener() {
+        return new Response.Listener<UserBean[]>() {
+            @Override
+            public void onResponse(UserBean[] userBeen) {
+                if(userBeen!=null) {
+                    HashMap<String, ArrayList<UserBean>> groupMembers =
+                            SuperWeChatApplication.getInstance().getGroupMembers();
+                    ArrayList<UserBean> users = Utils.array2List(userBeen);
+                    groupMembers.put(toChatUsername, users);
+                    currentMembers.addAll(users);
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        };
+    }
+
+    protected void onChatRoomViewCreation(){
         
         final ProgressDialog pd = ProgressDialog.show(this, "", "Joining......");
         EMChatManager.getInstance().joinChatRoom(toChatUsername, new EMValueCallBack<EMChatRoom>() {

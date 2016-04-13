@@ -62,6 +62,7 @@ import com.easemob.util.FileUtils;
 import com.easemob.util.LatLng;
 import com.easemob.util.TextFormater;
 
+import org.jivesoftware.smack.Chat;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -578,8 +579,12 @@ public class MessageAdapter extends BaseAdapter{
 //	        UserUtils.setCurrentUserAvatar(context, imageView);
 			UserUtils.setCurrentUserBeanAvatar(imageView);
 	    }else{
+			if(message.getChatType()== ChatType.GroupChat){
+                UserUtils.setGroupMemberAvatar(username,message.getFrom(),imageView);
+			}else {
 //	        UserUtils.setUserAvatar(context, message.getFrom(), imageView);
-            UserUtils.setUserBeanAvatar(message.getFrom(),imageView);
+				UserUtils.setUserBeanAvatar(message.getFrom(), imageView);
+			}
 	    }
 	    imageView.setOnClickListener(new View.OnClickListener() {
 			

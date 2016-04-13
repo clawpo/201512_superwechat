@@ -62,6 +62,25 @@ public class UserUtils {
         }
         return null;
     }
+
+    public static ArrayList<UserBean> getGroupMembersInfo(String groupId){
+        ArrayList<UserBean> groups=SuperWeChatApplication.getInstance()
+                .getGroupMembers().get(groupId);
+        return groups;
+    }
+
+    public static UserBean getGroupMemberInfo(String groupId, String username){
+        ArrayList<UserBean> members = getGroupMembersInfo(groupId);
+        UserBean user = new UserBean(username);
+        if(members!=null && members.contains(user)){
+            for(UserBean u:members){
+                if(user.getUserName().equals(u.getUserName())){
+                    return u;
+                }
+            }
+        }
+        return null;
+    }
     
     /**
      * 设置用户头像
@@ -82,6 +101,11 @@ public class UserUtils {
      */
     public static void setUserBeanAvatar(String username, NetworkImageView imageView){
         UserBean user = getUserBeanInfo(username);
+        setUserAvatar(user,imageView);
+    }
+
+    public static void setGroupMemberAvatar(String groupId,String username,NetworkImageView imageView){
+        UserBean user = getGroupMemberInfo(groupId,username);
         setUserAvatar(user,imageView);
     }
 
