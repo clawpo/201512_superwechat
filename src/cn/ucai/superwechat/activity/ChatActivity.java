@@ -535,7 +535,8 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
             }
         }else{
             currentMembers.addAll(members);
-            adapter.notifyDataSetChanged();
+            if(adapter!=null)
+                adapter.notifyDataSetChanged();
         }
 
 		group = EMGroupManager.getInstance().getGroup(toChatUsername);
@@ -561,7 +562,8 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
                     ArrayList<UserBean> users = Utils.array2List(userBeen);
                     groupMembers.put(toChatUsername, users);
                     currentMembers.addAll(users);
-                    adapter.notifyDataSetChanged();
+                    if(adapter!=null)
+                        adapter.notifyDataSetChanged();
                 }
             }
         };

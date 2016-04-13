@@ -19,7 +19,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -115,7 +114,6 @@ public class PublicGroupsActivity extends BaseActivity {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.e("main","publicgroupsactivity,setitemclicklistener,getitem="+adapter.getItem(position));
                 startActivity(new Intent(PublicGroupsActivity.this, GroupSimpleDetailActivity.class).
                         putExtra("groupinfo", adapter.getItem(position)));
             }

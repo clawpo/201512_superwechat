@@ -13,28 +13,37 @@
  */
 package cn.ucai.superwechat.adapter;
 
-import java.util.List;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.android.volley.toolbox.NetworkImageView;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMGroupManager;
+
+import java.util.List;
+
+import cn.ucai.superwechat.I;
 import cn.ucai.superwechat.R;
+import cn.ucai.superwechat.activity.NewFriendsMsgActivity;
+import cn.ucai.superwechat.bean.UserBean;
+import cn.ucai.superwechat.data.ApiParams;
+import cn.ucai.superwechat.data.GsonRequest;
 import cn.ucai.superwechat.db.InviteMessgeDao;
 import cn.ucai.superwechat.domain.InviteMessage;
+import cn.ucai.superwechat.utils.UserUtils;
 
 public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
 
@@ -53,7 +62,7 @@ public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
 		if (convertView == null) {
 			holder = new ViewHolder();
 			convertView = View.inflate(context, R.layout.row_invite_msg, null);
-			holder.avator = (ImageView) convertView.findViewById(R.id.avatar);
+			holder.avator = (NetworkImageView) convertView.findViewById(R.id.avatar);
 			holder.reason = (TextView) convertView.findViewById(R.id.message);
 			holder.name = (TextView) convertView.findViewById(R.id.name);
 			holder.status = (Button) convertView.findViewById(R.id.user_state);
@@ -123,16 +132,33 @@ public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
 			}
 
 			// 设置用户头像
+			try {
+				String path = new ApiParams().with(I.User.USER_NAME, msg.getFrom()).getRequestUrl(I.REQUEST_FIND_USER);
+                Log.e("main","set avatar path="+path);
+				((NewFriendsMsgActivity)context).executeRequest(new GsonRequest<UserBean>(path, UserBean.class,
+						new Response.Listener<UserBean>() {
+							@Override
+							public void onResponse(UserBean userBean) {
+                                Log.e("main","set avatar user="+userBean);
+								UserUtils.setUserBeanNickNF(userBean,holder.name);
+                                UserUtils.setUserBeanAvatar(userBean,holder.avator);
+							}
+						}, ((NewFriendsMsgActivity) context).errorListener()));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 
 		return convertView;
 	}
 
+
+
 	/**
 	 * 同意好友请求或者群申请
 	 * 
 	 * @param button
-	 * @param username
+	 * @param msg
 	 */
 	private void acceptInvitation(final Button button, final InviteMessage msg) {
 		final ProgressDialog pd = new ProgressDialog(context);
@@ -183,7 +209,7 @@ public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
 	}
 
 	private static class ViewHolder {
-		ImageView avator;
+		NetworkImageView avator;
 		TextView name;
 		TextView reason;
 		Button status;
