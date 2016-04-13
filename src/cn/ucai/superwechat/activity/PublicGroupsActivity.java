@@ -63,6 +63,7 @@ public class PublicGroupsActivity extends BaseActivity {
     private ProgressBar footLoadingPB;
     private TextView footLoadingText;
     private Button searchBtn;
+    private String userName;
     
 
 	@Override
@@ -71,6 +72,7 @@ public class PublicGroupsActivity extends BaseActivity {
 		setContentView(R.layout.activity_public_groups);
         mContext = this;
         groupsList = new ArrayList<GroupBean>();
+        userName = SuperWeChatApplication.getInstance().getUserName();
         initView();
         //获取及显示数据
 //        loadAndShowData();
@@ -93,7 +95,7 @@ public class PublicGroupsActivity extends BaseActivity {
                         int lasPos = view.getLastVisiblePosition();
                         if(hasMoreData && !isLoading && lasPos == listView.getCount()-1){
                             pageId++;
-                            new DownloadPublicGroupTask(mContext,"",(pageId*pagesize),pagesize).execute();
+                            new DownloadPublicGroupTask(mContext,userName,(pageId*pagesize),pagesize).execute();
                             loadAndShowData();
                         }
                     }

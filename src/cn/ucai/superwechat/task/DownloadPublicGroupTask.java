@@ -2,7 +2,6 @@ package cn.ucai.superwechat.task;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import com.android.volley.Response;
 
