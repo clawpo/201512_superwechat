@@ -565,11 +565,8 @@ public class ContactlistFragment extends Fragment {
 
     private void initContactList(){
         ArrayList<UserBean> contactlist = SuperWeChatApplication.getInstance().getContactList();
-        Log.e(TAG,"contactlist="+contactlist.size());
-        Log.e(TAG,"mContactList="+mContactList.size());
         mContactList.clear();
         mContactList.addAll(contactlist);
-        Log.e(TAG,"mContactList="+mContactList.size());
         // 添加"群聊"
         UserBean groupUser = new UserBean();
         String strGroup = getActivity().getString(R.string.group_chat);

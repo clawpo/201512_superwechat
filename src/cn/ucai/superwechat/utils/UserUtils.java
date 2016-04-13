@@ -184,6 +184,15 @@ public class UserUtils {
         }
     }
 
+    public static void setGroupMemberNick(String groupId,String username,TextView textView){
+        UserBean user = getGroupMemberInfo(groupId,username);
+        if(user!=null){
+            textView.setText(user.getNick());
+        }else{
+            textView.setText(username);
+        }
+    }
+
     /**
      * 设置用户昵称
      */

@@ -2,7 +2,6 @@ package cn.ucai.superwechat.task;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import com.android.volley.Response;
 
@@ -60,7 +59,6 @@ public class DownloadContactListTask extends BaseActivity {
                 if(userList==null){
                     return;
                 }
-                Log.e(TAG,"responseDownloadUserListListener,userList.length="+userList.length);
                 ArrayList<UserBean> contactList = SuperWeChatApplication.getInstance().getContactList();
                 ArrayList<UserBean> users = Utils.array2List(userList);
                 contactList.clear();

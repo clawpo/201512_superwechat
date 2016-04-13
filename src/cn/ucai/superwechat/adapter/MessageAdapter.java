@@ -422,6 +422,7 @@ public class MessageAdapter extends BaseAdapter{
 		    //demo里使用username代码nick
 //			UserUtils.setUserNick(message.getFrom(), holder.tv_usernick);
             UserUtils.setUserBeanNick(message.getFrom(),holder.tv_usernick);
+            UserUtils.setGroupMemberNick(username,message.getFrom(),holder.tv_usernick);
 		}
 		if(message.direct == EMMessage.Direct.SEND){
 //			UserUtils.setCurrentUserNick(holder.tv_usernick);
