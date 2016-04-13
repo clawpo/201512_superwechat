@@ -223,9 +223,12 @@ public class GroupDetailsActivity extends BaseActivity implements OnClickListene
 				addMembersToGroup(newmembers);
 				break;
 			case REQUEST_CODE_EXIT: // 退出群
-				progressDialog.setMessage(st2);
-				progressDialog.show();
-				exitGrop();
+                String userName=SuperWeChatApplication.getInstance().getUserName();
+                if(!mGroup.getOwner().equals(userName)) {
+                    progressDialog.setMessage(st2);
+                    progressDialog.show();
+                    exitGrop();
+                }
 				break;
 			case REQUEST_CODE_EXIT_DELETE: // 解散群
 				progressDialog.setMessage(st3);
