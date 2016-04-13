@@ -70,18 +70,18 @@ public class PublicGroupsSeachActivity extends BaseActivity{
         return new Response.Listener<GroupBean>() {
             @Override
             public void onResponse(GroupBean groupBean) {
-                if(groupBean!=null){
-                    searchedGroup = groupBean;
-                    pd.dismiss();
-                    containerLayout.setVisibility(View.VISIBLE);
-                    UserUtils.setGroupBeanAvatar(groupBean,nivAvatar);
-                    nameText.setText(searchedGroup.getName());
-                }else{
-                    pd.dismiss();
-                    searchedGroup = null;
-                    containerLayout.setVisibility(View.GONE);
-                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.group_not_existed), Toast.LENGTH_SHORT).show();
-                }
+            if(groupBean!=null){
+                searchedGroup = groupBean;
+                pd.dismiss();
+                containerLayout.setVisibility(View.VISIBLE);
+                UserUtils.setGroupBeanAvatar(groupBean,nivAvatar);
+                nameText.setText(searchedGroup.getName());
+            }else{
+                pd.dismiss();
+                searchedGroup = null;
+                containerLayout.setVisibility(View.GONE);
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.group_not_existed), Toast.LENGTH_SHORT).show();
+            }
             }
         };
     }
