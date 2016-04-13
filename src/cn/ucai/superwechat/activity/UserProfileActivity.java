@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.android.volley.toolbox.NetworkImageView;
 import com.easemob.EMValueCallBack;
+import com.easemob.chat.EMMessage;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
@@ -68,6 +69,8 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 	private void initListener() {
 		Intent intent = getIntent();
 		String username = intent.getStringExtra("username");
+		String groupId = intent.getStringExtra("groupId");
+		EMMessage.ChatType chatType = (EMMessage.ChatType)intent.getSerializableExtra("chatType");
         String currentUserName = SuperWeChatApplication.getInstance().getUserName();
 		boolean enableUpdate = intent.getBooleanExtra("setting", false);
 		if (enableUpdate) {
@@ -84,9 +87,14 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 			UserUtils.setCurrentUserBeanNick(tvNickName);
 			UserUtils.setCurrentUserBeanAvatar(headAvatar);
 		} else {
-			tvUsername.setText(username);
-			UserUtils.setUserBeanNick(username, tvNickName);
-			UserUtils.setUserBeanAvatar(username, headAvatar);
+            tvUsername.setText(username);
+			if(chatType== EMMessage.ChatType.GroupChat){
+                UserUtils.setGroupMemberNick(groupId,username,tvNickName);
+                UserUtils.setGroupMemberAvatar(groupId,username,headAvatar);
+			}else{
+				UserUtils.setUserBeanNick(username, tvNickName);
+				UserUtils.setUserBeanAvatar(username, headAvatar);
+			}
 //			asyncFetchUserInfo(username);
 		}
 	}

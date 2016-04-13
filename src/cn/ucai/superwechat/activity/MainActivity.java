@@ -990,7 +990,13 @@ public class MainActivity extends BaseActivity implements EMEventListener {
                     if(userBeen!=null){
                         HashMap<String, ArrayList<UserBean>> groupMembers =
                                 SuperWeChatApplication.getInstance().getGroupMembers();
+                        ArrayList<UserBean> list = Utils.array2List(userBeen);
                         ArrayList<UserBean> members = groupMembers.get(groupId);
+                        if(members==null){
+                            members = new ArrayList<UserBean>();
+                            groupMembers.put(groupId,members);
+                        }
+                        members.addAll(list);
                         members.add(SuperWeChatApplication.getInstance().getUser());
                     }
                 }
