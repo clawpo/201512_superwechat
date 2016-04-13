@@ -2,7 +2,6 @@ package cn.ucai.superwechat.task;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import com.android.volley.Response;
 
@@ -53,7 +52,6 @@ public class DownloadAllGroupTask extends BaseActivity {
                 if(groupList==null){
                     return;
                 }
-                Log.e(TAG,"responseDownloadAllGroupListener,groupList.length="+groupList.length);
                 ArrayList<GroupBean> list = SuperWeChatApplication.getInstance().getGroupList();
                 ArrayList<GroupBean> groups = Utils.array2List(groupList);
                 list.addAll(groups);

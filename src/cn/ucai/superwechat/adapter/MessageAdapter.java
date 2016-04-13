@@ -420,12 +420,9 @@ public class MessageAdapter extends BaseAdapter{
 		// 群聊时，显示接收的消息的发送人的名称
 		if ((chatType == ChatType.GroupChat || chatType == ChatType.ChatRoom) && message.direct == EMMessage.Direct.RECEIVE){
 		    //demo里使用username代码nick
-//			UserUtils.setUserNick(message.getFrom(), holder.tv_usernick);
-            UserUtils.setUserBeanNick(message.getFrom(),holder.tv_usernick);
             UserUtils.setGroupMemberNick(username,message.getFrom(),holder.tv_usernick);
 		}
 		if(message.direct == EMMessage.Direct.SEND){
-//			UserUtils.setCurrentUserNick(holder.tv_usernick);
             UserUtils.setCurrentUserBeanNick(holder.tv_usernick);
 		}
 		// 如果是发送的消息并且不是群聊消息，显示已读textview
@@ -577,13 +574,11 @@ public class MessageAdapter extends BaseAdapter{
 	private void setUserAvatar(final EMMessage message, NetworkImageView imageView){
 	    if(message.direct == Direct.SEND){
 	        //显示自己头像
-//	        UserUtils.setCurrentUserAvatar(context, imageView);
 			UserUtils.setCurrentUserBeanAvatar(imageView);
 	    }else{
 			if(message.getChatType()== ChatType.GroupChat){
                 UserUtils.setGroupMemberAvatar(username,message.getFrom(),imageView);
 			}else {
-//	        UserUtils.setUserAvatar(context, message.getFrom(), imageView);
 				UserUtils.setUserBeanAvatar(message.getFrom(), imageView);
 			}
 	    }

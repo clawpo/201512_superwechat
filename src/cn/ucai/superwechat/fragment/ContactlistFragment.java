@@ -23,7 +23,6 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -391,7 +390,6 @@ public class ContactlistFragment extends Fragment {
                                         .with(I.Contact.MYUID, contact.getMyuid() + "")
                                         .with(I.Contact.CUID, contact.getCuid() + "")
 										.getRequestUrl(I.REQUEST_DELETE_CONTACT);
-                                Log.e(TAG,"fragment delete contacts,path="+path);
                                 mContext.executeRequest(new GsonRequest<Boolean>(path, Boolean.class,
                                         responseDeleteContactListener(), mContext.errorListener()));
                             }
