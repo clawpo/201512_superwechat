@@ -275,6 +275,7 @@ public class GroupsActivity extends BaseActivity {
     private void registerDeleteGroupMemberReceiver() {
         mDeleteGroupMemberReceiver=new DeleteGroupMemberReceiver();
         IntentFilter filter=new IntentFilter("exit_group");
+        filter.addAction("delete_group");
         registerReceiver(mDeleteGroupMemberReceiver, filter);
     }
 }

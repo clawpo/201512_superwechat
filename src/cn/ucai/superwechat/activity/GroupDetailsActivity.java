@@ -390,15 +390,24 @@ public class GroupDetailsActivity extends BaseActivity implements OnClickListene
 			public void run() {
 				try {
 				    EMGroupManager.getInstance().exitAndDeleteGroup(groupId);
-					runOnUiThread(new Runnable() {
-						public void run() {
-							progressDialog.dismiss();
-							setResult(RESULT_OK);
-							finish();
-							if(ChatActivity.activityInstance != null)
-							    ChatActivity.activityInstance.finish();
-						}
-					});
+                    String path = new ApiParams().with(I.Group.GROUP_NAME, mGroup.getName())
+                            .getRequestUrl(I.REQUEST_DELETE_GROUP);
+                    executeRequest(new GsonRequest<MessageBean>(path, MessageBean.class,
+                            new Response.Listener<MessageBean>() {
+                                @Override
+                                public void onResponse(MessageBean messageBean) {
+                                    if(messageBean.isSuccess()){
+                                        progressDialog.dismiss();
+                                        setResult(RESULT_OK);
+                                        Intent intent=new Intent("delete_group");
+                                        intent.putExtra("group", mGroup);
+                                        sendStickyBroadcast(intent);
+                                        finish();
+                                        if(ChatActivity.activityInstance != null)
+                                            ChatActivity.activityInstance.finish();
+                                    }
+                                }
+                            },errorListener()));
 				} catch (final Exception e) {
 					runOnUiThread(new Runnable() {
 						public void run() {
