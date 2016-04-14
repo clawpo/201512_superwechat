@@ -285,6 +285,11 @@ public class ChatAllHistoryFragment extends Fragment implements View.OnClickList
 
 	@Override
 	public void onResume() {
+        Intent intent = ((MainActivity)getActivity()).getIntent();
+        String username = intent.getStringExtra("userId");
+        if(username!=null){
+            startActivity(new Intent(getActivity(), ChatActivity.class).putExtra("userId", username));
+        }
 		super.onResume();
 		if (!hidden && ! ((MainActivity)getActivity()).isConflict) {
 			refresh();

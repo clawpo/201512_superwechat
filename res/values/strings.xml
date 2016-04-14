@@ -101,6 +101,7 @@
     <string name="Group_of_Lord">The group owner</string>
     <string name="Introduction">Brief</string>
     <string name="To_join_the_chat">Join the group</string>
+    <string name="send_message">Send Message</string>
     <string name="login">Login</string>
     <string name="user_name">User name</string>
     <string name="password">Password</string>
@@ -131,6 +132,7 @@
     <string name="please_check">key validation error!Please on AndroidManifest.xml file check the key set</string>
     <string name="expression">[expression]</string>
     <string name="Removed_from_the_failure">Removed fail</string>
+    <string name="Delete_successfully">Removed successfuly</string>
     <string name="be_removing">Be removing</string>
     <string name="call_duration">call duration</string>
     <string name="Refused">Refused</string>

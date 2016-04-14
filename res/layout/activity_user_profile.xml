@@ -89,7 +89,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#ffffff"
-            android:paddingTop="10dp"
+            android:paddingTop="15dp"
             android:paddingBottom="10dip"
             >
             <TextView 
@@ -126,4 +126,17 @@
                 />
         </RelativeLayout>
     </LinearLayout>
+    <Button
+        android:id="@+id/btn_to_chat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="11dp"
+        android:layout_marginRight="11dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/btn_green_selector"
+        android:padding="7dp"
+        android:text="@string/send_message"
+        android:textColor="@android:color/white"
+        android:textSize="18sp" />
 </LinearLayout>

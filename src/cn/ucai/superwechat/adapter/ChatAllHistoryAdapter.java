@@ -97,7 +97,11 @@ public class ChatAllHistoryAdapter extends ArrayAdapter<EMConversation> {
             // 群聊消息，显示群聊头像
 			EMGroup group = EMGroupManager.getInstance().getGroup(username);
 			holder.name.setText(group != null ? group.getGroupName() : username);
-            UserUtils.setGroupAvatar(group.getGroupName(),holder.avatar);
+            if(group!=null) {
+                UserUtils.setGroupAvatar(group.getGroupName(), holder.avatar);
+            }else{
+                UserUtils.setGroupAvatar("", holder.avatar);
+            }
 		} else {
 		    UserUtils.setUserBeanAvatar(username, holder.avatar);
 			if (username.equals(Constant.GROUP_USERNAME)) {

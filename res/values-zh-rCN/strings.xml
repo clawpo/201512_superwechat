@@ -106,6 +106,7 @@
     <string name="Group_of_Lord">群主</string>
     <string name="Introduction">简介</string>
     <string name="To_join_the_chat">加入群聊</string>
+    <string name="send_message">发送消息</string>
     <string name="login">登录</string>
     <string name="user_name">用户名</string>
     <string name="password">密码</string>
@@ -162,6 +163,7 @@
     <string name="Cant_chat_with_yourself">不能和自己聊天</string>
     <string name="deleting">正在删除...</string>
     <string name="Delete_failed">删除失败:</string>
+    <string name="Delete_successfully">删除成功</string>
     <string name="Is_moved_into_blacklist">正在移入黑名单...</string>
     <string name="Log_uploaded_successfully">日志上传成功</string>
     <string name="Log_Upload_failed">log上传失败</string>

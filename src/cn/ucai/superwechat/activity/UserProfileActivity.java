@@ -3,6 +3,7 @@ package cn.ucai.superwechat.activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -14,6 +15,7 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -26,13 +28,16 @@ import com.easemob.chat.EMMessage;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
+import java.util.HashMap;
 
 import cn.ucai.superwechat.DemoHXSDKHelper;
 import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.SuperWeChatApplication;
 import cn.ucai.superwechat.applib.controller.HXSDKHelper;
+import cn.ucai.superwechat.bean.UserBean;
 import cn.ucai.superwechat.domain.User;
 import cn.ucai.superwechat.utils.UserUtils;
+import cn.ucai.superwechat.utils.Utils;
 
 public class UserProfileActivity extends BaseActivity implements OnClickListener{
     public static final String TAG = UserProfileActivity.class.getName();
@@ -46,13 +51,15 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 	private TextView tvUsername;
 	private ProgressDialog dialog;
 	private RelativeLayout rlNickName;
-	
-	
-	
+	private Button btnAddFirend;
+    Context mContext;
+    private String username;
+
 	@Override
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
 		setContentView(R.layout.activity_user_profile);
+        mContext = this;
 		initView();
 		initListener();
 	}
@@ -64,11 +71,12 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 		tvNickName = (TextView) findViewById(R.id.user_nickname);
 		rlNickName = (RelativeLayout) findViewById(R.id.rl_nickname);
 		iconRightArrow = (ImageView) findViewById(R.id.ic_right_arrow);
+        btnAddFirend = (Button) findViewById(R.id.btn_to_chat);
 	}
 	
 	private void initListener() {
 		Intent intent = getIntent();
-		String username = intent.getStringExtra("username");
+		username = intent.getStringExtra("username");
 		String groupId = intent.getStringExtra("groupId");
 		EMMessage.ChatType chatType = (EMMessage.ChatType)intent.getSerializableExtra("chatType");
         String currentUserName = SuperWeChatApplication.getInstance().getUserName();
@@ -97,9 +105,49 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 			}
 //			asyncFetchUserInfo(username);
 		}
+        showAddOrToChat();
+        setAddOrToChatOnClickListener();
 	}
+    public static enum UserAction {
+        UNKNOW,
+        SEND_MESSAGE,
+        ADD_FIREND
+    }
 
-	@Override
+    UserAction action = UserAction.UNKNOW;
+    private void setAddOrToChatOnClickListener(){
+        btnAddFirend.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(action == UserAction.ADD_FIREND){
+                    Utils.showToast(mContext,"该功能稍后实现",Toast.LENGTH_SHORT);
+                }
+                if(action == UserAction.SEND_MESSAGE){
+                    finish();
+                    startActivity(new Intent(mContext,
+                            MainActivity.class).putExtra("userId", username));
+                }
+            }
+        });
+    }
+    private void showAddOrToChat() {
+        String currentUserName = SuperWeChatApplication.getInstance().getUserName();
+        if (username == null || username.equals(currentUserName)) {
+            btnAddFirend.setVisibility(View.INVISIBLE);
+        }else{
+            HashMap<String, UserBean> userList =
+                    SuperWeChatApplication.getInstance().getUserList();
+            if(userList.containsKey(username)){
+                btnAddFirend.setText(R.string.send_message);
+                action = UserAction.SEND_MESSAGE;
+            }else{
+                btnAddFirend.setText(R.string.add_friend);
+                action = UserAction.ADD_FIREND;
+            }
+        }
+    }
+
+    @Override
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.user_head_avatar:

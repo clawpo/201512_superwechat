@@ -208,17 +208,17 @@ public class UserUtils {
      * 设置当前用户昵称
      */
     public static void setCurrentUserNick(TextView textView){
-        UserBean user = SuperWeChatApplication.getInstance().getUser();
+        User user = ((DemoHXSDKHelper)HXSDKHelper.getInstance()).getUserProfileManager().getCurrentUserInfo();
         if(textView != null){
-    		textView.setText(user.getNick());
-    	}
+            textView.setText(user.getNick());
+        }
     }
 
     /**
      * 设置当前用户昵称
      */
     public static void setCurrentUserBeanNick(TextView textView){
-        User user = ((DemoHXSDKHelper)HXSDKHelper.getInstance()).getUserProfileManager().getCurrentUserInfo();
+        UserBean user = SuperWeChatApplication.getInstance().getUser();
         if(textView != null){
             textView.setText(user.getNick());
         }

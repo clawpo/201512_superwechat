@@ -19,6 +19,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -40,6 +41,7 @@ import com.android.volley.toolbox.NetworkImageView;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMGroup;
 import com.easemob.chat.EMGroupManager;
+import com.easemob.chat.EMMessage;
 import com.easemob.exceptions.EaseMobException;
 import com.easemob.util.EMLog;
 import com.easemob.util.NetUtils;
@@ -57,6 +59,7 @@ import cn.ucai.superwechat.data.ApiParams;
 import cn.ucai.superwechat.data.GsonRequest;
 import cn.ucai.superwechat.data.RequestManager;
 import cn.ucai.superwechat.utils.UserUtils;
+import cn.ucai.superwechat.utils.Utils;
 import cn.ucai.superwechat.widget.ExpandGridView;
 
 public class GroupDetailsActivity extends BaseActivity implements OnClickListener {
@@ -247,31 +250,53 @@ public class GroupDetailsActivity extends BaseActivity implements OnClickListene
 				if(!TextUtils.isEmpty(returnData)){
 					progressDialog.setMessage(st5);
 					progressDialog.show();
-					
-					new Thread(new Runnable() {
-						public void run() {
-							try {
-							    EMGroupManager.getInstance().changeGroupName(groupId, returnData);
-								runOnUiThread(new Runnable() {
-									public void run() {
-										((TextView) findViewById(R.id.group_name)).setText(returnData + "(" + group.getAffiliationsCount()
-												+ st);
-										progressDialog.dismiss();
-										Toast.makeText(getApplicationContext(), st6, Toast.LENGTH_SHORT).show();
-									}
-								});
-								
-							} catch (EaseMobException e) {
-								e.printStackTrace();
-								runOnUiThread(new Runnable() {
-									public void run() {
-										progressDialog.dismiss();
-										Toast.makeText(getApplicationContext(), st7, Toast.LENGTH_SHORT).show();
-									}
-								});
-							}
-						}
-					}).start();
+                    try {
+                        String path = new ApiParams()
+                                .with(I.Group.GROUP_NAME, mGroup.getName())
+                                .with(I.Group.NEW_NAME, returnData)
+                                .getRequestUrl(I.REQUEST_UPDATE_GROUP_NAME);
+                        executeRequest(new GsonRequest<MessageBean>(path, MessageBean.class,
+                                new Response.Listener<MessageBean>() {
+                                    @Override
+                                    public void onResponse(MessageBean messageBean) {
+                                        if(messageBean.isSuccess()){
+                                            sendStickyBroadcast(new Intent("update_group_name")
+                                                    .putExtra("groupName", returnData));
+
+                                            new Thread(new Runnable() {
+                                                public void run() {
+                                                    try {
+                                                        EMGroupManager.getInstance().changeGroupName(groupId, returnData);
+                                                        runOnUiThread(new Runnable() {
+                                                            public void run() {
+                                                                ((TextView) findViewById(R.id.group_name)).setText(returnData + "(" + group.getAffiliationsCount()
+                                                                        + st);
+                                                                progressDialog.dismiss();
+                                                                Toast.makeText(getApplicationContext(), st6, Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        });
+
+                                                    } catch (EaseMobException e) {
+                                                        e.printStackTrace();
+                                                        runOnUiThread(new Runnable() {
+                                                            public void run() {
+                                                                progressDialog.dismiss();
+                                                                Toast.makeText(getApplicationContext(), st7, Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        });
+                                                    }
+                                                }
+                                            }).start();
+                                        }else{
+                                            progressDialog.dismiss();
+                                            Toast.makeText(getApplicationContext(), st7, Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                },errorListener()));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
 				}
 				break;
 			case REQUEST_CODE_ADD_TO_BALCKLIST:
@@ -347,7 +372,6 @@ public class GroupDetailsActivity extends BaseActivity implements OnClickListene
 		new Thread(new Runnable() {
 			public void run() {
 				try {
-				    EMGroupManager.getInstance().exitFromGroup(groupId);
                     String username=SuperWeChatApplication.getInstance().getUserName();
                     String path = new ApiParams().with(I.Group.GROUP_NAME, mGroup.getName())
                             .with(I.Group.MEMBERS, username)
@@ -357,6 +381,11 @@ public class GroupDetailsActivity extends BaseActivity implements OnClickListene
                                 @Override
                                 public void onResponse(Boolean aBoolean) {
                                     if(aBoolean){
+                                        try {
+                                            EMGroupManager.getInstance().exitFromGroup(groupId);
+                                        } catch (EaseMobException e) {
+                                            e.printStackTrace();
+                                        }
                                         progressDialog.dismiss();
                                         setResult(RESULT_OK);
                                         Intent intent=new Intent("exit_group");
@@ -389,7 +418,6 @@ public class GroupDetailsActivity extends BaseActivity implements OnClickListene
 		new Thread(new Runnable() {
 			public void run() {
 				try {
-				    EMGroupManager.getInstance().exitAndDeleteGroup(groupId);
                     String path = new ApiParams().with(I.Group.GROUP_NAME, mGroup.getName())
                             .getRequestUrl(I.REQUEST_DELETE_GROUP);
                     executeRequest(new GsonRequest<MessageBean>(path, MessageBean.class,
@@ -397,6 +425,11 @@ public class GroupDetailsActivity extends BaseActivity implements OnClickListene
                                 @Override
                                 public void onResponse(MessageBean messageBean) {
                                     if(messageBean.isSuccess()){
+                                        try {
+                                            EMGroupManager.getInstance().exitAndDeleteGroup(groupId);
+                                        } catch (EaseMobException e) {
+                                            e.printStackTrace();
+                                        }
                                         progressDialog.dismiss();
                                         setResult(RESULT_OK);
                                         Intent intent=new Intent("delete_group");
@@ -428,44 +461,65 @@ public class GroupDetailsActivity extends BaseActivity implements OnClickListene
 	private void addMembersToGroup(final String[] newmembers) {
 		final String st6 = getResources().getString(R.string.Add_group_members_fail);
 		new Thread(new Runnable() {
-			
+
 			public void run() {
 				try {
-					// 创建者调用add方法
-					if (EMChatManager.getInstance().getCurrentUser().equals(group.getOwner())) {
-					    EMGroupManager.getInstance().addUsersToGroup(groupId, newmembers);
-                        String path = new ApiParams().with(I.Group.GROUP_NAME, groupId)
-                                .with(I.Group.MEMBERS, newmembers.toString())
-                                .getRequestUrl(I.REQUEST_ADD_GROUP_MEMBERS);
-                        executeRequest(new GsonRequest<MessageBean>(path, MessageBean.class,
-                                new Response.Listener<MessageBean>() {
-                                    @Override
-                                    public void onResponse(MessageBean messageBean) {
-                                        if(messageBean.isSuccess()){
-                                            ArrayList<UserBean> contactList = SuperWeChatApplication.getInstance().getContactList();
-                                            for(int i=0;i<newmembers.length;i++){
-                                                UserBean user = new UserBean(newmembers[i]);
-                                                int id=contactList.indexOf(user);
-                                                if(id>=0){
-                                                    mGroupMembers.add(user);
-                                                }
+
+                    StringBuilder newGroupMembers = new StringBuilder();
+                    for (String member : newmembers) {
+                        newGroupMembers.append(member).append(",");
+                    }
+                    newGroupMembers.deleteCharAt(newGroupMembers.length() - 1);
+                    Log.e(TAG,"members="+newGroupMembers.toString());
+                    String path = new ApiParams().with(I.Group.GROUP_NAME, groupId)
+                            .with(I.Group.MEMBERS, newGroupMembers.toString())
+                            .getRequestUrl(I.REQUEST_ADD_GROUP_MEMBERS);
+                    executeRequest(new GsonRequest<MessageBean>(path, MessageBean.class,
+                            new Response.Listener<MessageBean>() {
+                                @Override
+                                public void onResponse(MessageBean messageBean) {
+                                    if(messageBean.isSuccess()){
+                                        ArrayList<UserBean> contactList = SuperWeChatApplication.getInstance().getContactList();
+                                        for(int i=0;i<newmembers.length;i++){
+                                            UserBean user = new UserBean(newmembers[i]);
+                                            int id=contactList.indexOf(user);
+                                            if(id>=0){
+                                                mGroupMembers.add(user);
+//                                                adapter.notifyDataSetChanged();
+
                                             }
                                         }
+                                        try {
+                                            // 创建者调用add方法
+                                            if (EMChatManager.getInstance().getCurrentUser().equals(group.getOwner())) {
+                                                EMGroupManager.getInstance().addUsersToGroup(groupId, newmembers);
+                                            } else {
+                                                // 一般成员调用invite方法
+                                                EMGroupManager.getInstance().inviteUser(groupId, newmembers, null);
+                                            }
+                                        } catch (EaseMobException e) {
+                                        e.printStackTrace();
+                                        }
+                                        adapter.notifyDataSetChanged();
+                                        ((TextView) findViewById(R.id.group_name))
+                                                .setText(group.getGroupName() + "(" + group.getAffiliationsCount()
+                                                        + st);
+                                        progressDialog.dismiss();
+                                    }else{
+                                        progressDialog.dismiss();
+                                        Toast.makeText(getApplicationContext(), st6, Toast.LENGTH_LONG).show();
                                     }
-                                },errorListener()));
-					} else {
-						// 一般成员调用invite方法
-					    EMGroupManager.getInstance().inviteUser(groupId, newmembers, null);
-					}
-					runOnUiThread(new Runnable() {
-						public void run() {
-                            adapter.notifyDataSetChanged();
-							((TextView) findViewById(R.id.group_name))
-                                    .setText(group.getGroupName() + "(" + group.getAffiliationsCount()
-									+ st);
-							progressDialog.dismiss();
-						}
-					});
+                                }
+                            },errorListener()));
+//					runOnUiThread(new Runnable() {
+//						public void run() {
+//                            adapter.notifyDataSetChanged();
+//							((TextView) findViewById(R.id.group_name))
+//                                    .setText(group.getGroupName() + "(" + group.getAffiliationsCount()
+//									+ st);
+//							progressDialog.dismiss();
+//						}
+//					});
 				} catch (final Exception e) {
 					runOnUiThread(new Runnable() {
 						public void run() {
@@ -709,13 +763,33 @@ public class GroupDetailsActivity extends BaseActivity implements OnClickListene
 								return;
 							}
 							EMLog.d("group", "remove user from group:" + user.getUserName());
-							deleteMembersFromGroup(user.getUserName());
+                            try {
+                                String path = new ApiParams().with(I.Group.GROUP_NAME, mGroup.getName())
+                                        .with(I.Group.MEMBERS, user.getUserName())
+                                        .getRequestUrl(I.REQUEST_DELETE_GROUP_MEMBER);
+                                executeRequest(new GsonRequest<Boolean>(path, Boolean.class,
+                                    new Response.Listener<Boolean>() {
+                                        @Override
+                                        public void onResponse(Boolean aBoolean) {
+                                            String str= getApplication().getString(R.string.Removed_from_the_failure);
+                                            if(aBoolean){
+                                                deleteMembersFromGroup(user.getUserName());
+                                                str = getApplication().getString(R.string.Delete_successfully);
+                                                mGroupMembers.remove(user);
+                                                notifyDataSetChanged();
+                                            }
+                                            Utils.showToast(getApplicationContext(),str,Toast.LENGTH_SHORT);
+                                        }
+                                    },errorListener()));
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
 						} else {
 							// 正常情况下点击user，可以进入用户详情或者聊天页面等等
-							// startActivity(new
-							// Intent(GroupDetailsActivity.this,
-							// ChatActivity.class).putExtra("userId",
-							// user.getUsername()));
+							 startActivity(new Intent(GroupDetailsActivity.this,
+							 UserProfileActivity.class).putExtra("username",user.getUserName())
+                                     .putExtra("groupId", groupId)
+                                     .putExtra("chatType", EMMessage.ChatType.GroupChat));
 
 						}
 					}
