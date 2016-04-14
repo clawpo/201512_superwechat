@@ -158,6 +158,7 @@ public class GroupAdapter extends BaseAdapter {
     }
 
     public void remove(GroupBean group) {
+        mGroupList.remove(group);
         boolean isRemove = mGroupList.remove(group);
         if(isRemove){
             notifyDataSetChanged();

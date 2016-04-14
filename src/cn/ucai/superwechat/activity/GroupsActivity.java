@@ -57,6 +57,7 @@ public class GroupsActivity extends BaseActivity {
 	Handler handler = new Handler();
 
     GroupChangedReceiver mGroupListChangedReceiver;
+    int mPosition;//正在修改的群名称在集合中的下标
 
 	class SyncListener implements HXSDKHelper.HXSyncListener {
 		@Override
@@ -140,6 +141,7 @@ public class GroupsActivity extends BaseActivity {
                     // 添加公开群
                     startActivityForResult(new Intent(GroupsActivity.this, PublicGroupsActivity.class), REQUEST_NEW_PUBLIC_GROUP);
                 } else {
+                    mPosition=position;
                     // 进入群聊
                     Intent intent = new Intent(GroupsActivity.this, ChatActivity.class);
                     // it is group chat
@@ -251,6 +253,17 @@ public class GroupsActivity extends BaseActivity {
                 if(!groupList.containsAll(groupList)){
                     groupAdapter.initList(groupList);
                 }
+            }else if(intent.getAction().equals("update_group_name")) {
+                //获取广播中携带的新群名
+                String newGroupName=intent.getStringExtra("groupName");
+                ArrayList<GroupBean> groupList = SuperWeChatApplication.getInstance().getGroupList();
+
+                //刷新群列表显示
+                GroupBean group=groupAdapter.getItem(mPosition);
+                group.setName(newGroupName);
+                groupAdapter.notifyDataSetChanged();
+                //修改全局的群集合
+                SuperWeChatApplication.getInstance().setGroupList(groupAdapter.getGroups());
             }
         }
     }

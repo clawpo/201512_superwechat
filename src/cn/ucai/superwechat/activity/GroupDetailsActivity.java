@@ -260,6 +260,12 @@ public class GroupDetailsActivity extends BaseActivity implements OnClickListene
                                     @Override
                                     public void onResponse(MessageBean messageBean) {
                                         if(messageBean.isSuccess()){
+                                            ArrayList<GroupBean> groupList =
+                                                    SuperWeChatApplication.getInstance().getGroupList();
+                                            int index = groupList.indexOf(mGroup);
+                                            if(index>0){
+                                                groupList.get(index).setName(returnData);
+                                            }
                                             sendStickyBroadcast(new Intent("update_group_name")
                                                     .putExtra("groupName", returnData));
 
