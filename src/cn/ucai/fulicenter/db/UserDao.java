@@ -49,8 +49,6 @@ public class UserDao extends SQLiteOpenHelper {
         values.put(I.User.PASSWORD,user.getPassword());
         values.put(I.User.AVATAR,user.getAvatar());
         values.put(I.User.HEADER,user.getHeader());
-        values.put(I.User.LATITUDE,user.getLatitude());
-        values.put(I.User.LONGITUDE,user.getLongitude());
         values.put(I.User.UN_READ_MSG_COUNT,user.getUnreadMsgCount());
         SQLiteDatabase db = getWritableDatabase();
         long insert = db.insert(TABLE_NAME, null, values);
@@ -70,7 +68,7 @@ public class UserDao extends SQLiteOpenHelper {
             Double latitude = c.getDouble(c.getColumnIndex(I.User.LATITUDE));
             Double loingitude = c.getDouble(c.getColumnIndex(I.User.LONGITUDE));
             int unReaderMsgCount = c.getInt(c.getColumnIndex(I.User.UN_READ_MSG_COUNT));
-            UserBean user = new UserBean(uid,"ok",userName,nick,password,avatar,latitude,loingitude,unReaderMsgCount);
+            UserBean user = new UserBean(uid,"ok",userName,nick,password,avatar,unReaderMsgCount);
             return user;
         }
         return null;
@@ -84,8 +82,6 @@ public class UserDao extends SQLiteOpenHelper {
         values.put(I.User.PASSWORD,user.getPassword());
         values.put(I.User.AVATAR,user.getAvatar());
         values.put(I.User.HEADER,user.getHeader());
-        values.put(I.User.LATITUDE,user.getLatitude());
-        values.put(I.User.LONGITUDE,user.getLongitude());
         values.put(I.User.UN_READ_MSG_COUNT,user.getUnreadMsgCount());
         SQLiteDatabase db = getWritableDatabase();
         long insert = db.update(TABLE_NAME, values,I.User.USER_NAME+"=?",new String[]{user.getUserName()});
