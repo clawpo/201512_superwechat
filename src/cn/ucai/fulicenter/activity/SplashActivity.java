@@ -13,14 +13,12 @@ import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMGroupManager;
 
 import cn.ucai.fulicenter.DemoHXSDKHelper;
-import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.FuLiCenterApplication;
+import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.bean.UserBean;
 import cn.ucai.fulicenter.db.UserDao;
-import cn.ucai.fulicenter.task.DownloadAllGroupTask;
 import cn.ucai.fulicenter.task.DownloadContactListTask;
 import cn.ucai.fulicenter.task.DownloadContactTask;
-import cn.ucai.fulicenter.task.DownloadPublicGroupTask;
 
 /**
  * 开屏页
@@ -61,10 +59,6 @@ public class SplashActivity extends BaseActivity {
             new DownloadContactTask(mContext,userName,0,20).execute();
             //下载好友列表
             new DownloadContactListTask(mContext,userName,0,20).execute();
-            //下载群组列表
-            new DownloadAllGroupTask(mContext,userName).execute();
-			//下载公开群组列表
-			new DownloadPublicGroupTask(mContext,userName,0,20).execute();
             new Thread(new Runnable() {
                 public void run() {
                         // ** 免登陆情况 加载所有本地群和会话

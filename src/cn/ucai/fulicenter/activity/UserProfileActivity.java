@@ -96,13 +96,13 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 			UserUtils.setCurrentUserBeanAvatar(headAvatar);
 		} else {
             tvUsername.setText(username);
-			if(chatType== EMMessage.ChatType.GroupChat){
-                UserUtils.setGroupMemberNick(groupId,username,tvNickName);
-                UserUtils.setGroupMemberAvatar(groupId,username,headAvatar);
-			}else{
+//			if(chatType== EMMessage.ChatType.GroupChat){
+//                UserUtils.setGroupMemberNick(groupId,username,tvNickName);
+//                UserUtils.setGroupMemberAvatar(groupId,username,headAvatar);
+//			}else{
 				UserUtils.setUserBeanNick(username, tvNickName);
 				UserUtils.setUserBeanAvatar(username, headAvatar);
-			}
+//			}
 //			asyncFetchUserInfo(username);
 		}
         showAddOrToChat();

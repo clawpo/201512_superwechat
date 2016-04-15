@@ -160,8 +160,6 @@ public class ChatAllHistoryFragment extends Fragment implements View.OnClickList
 			}
 		});
 		registerContactListChangedReceiver();
-		registerGroupListChangedReceiver();
-        registerPublicGroupListChangedReceiver();
 	}
 
 	void hideSoftKeyboard() {
@@ -324,44 +322,11 @@ public class ChatAllHistoryFragment extends Fragment implements View.OnClickList
 		getActivity().registerReceiver(mContactListChangedReceiver,filter);
 	}
 
-	class GroupListChangedReceiver extends BroadcastReceiver{
-
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			adapter.notifyDataSetChanged();
-		}
-	}
-	private GroupListChangedReceiver mGroupListChangedReceiver;
-	private void registerGroupListChangedReceiver(){
-		mGroupListChangedReceiver = new GroupListChangedReceiver();
-		IntentFilter filter = new IntentFilter("update_group");
-		getActivity().registerReceiver(mGroupListChangedReceiver,filter);
-	}
-
-    class PublicGroupListChangedReceiver extends BroadcastReceiver{
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            adapter.notifyDataSetChanged();
-        }
-    }
-    private PublicGroupListChangedReceiver mPublicGroupListChangedReceiver;
-    private void registerPublicGroupListChangedReceiver(){
-        mPublicGroupListChangedReceiver = new PublicGroupListChangedReceiver();
-        IntentFilter filter = new IntentFilter("update_public_group");
-        getActivity().registerReceiver(mPublicGroupListChangedReceiver,filter);
-    }
 
     @Override
     public void onDestroy() {
         if(mContactListChangedReceiver!=null){
             getActivity().unregisterReceiver(mContactListChangedReceiver);
-        }
-        if(mGroupListChangedReceiver!=null){
-            getActivity().unregisterReceiver(mGroupListChangedReceiver);
-        }
-        if(mPublicGroupListChangedReceiver!=null){
-            getActivity().unregisterReceiver(mPublicGroupListChangedReceiver);
         }
         super.onDestroy();
     }

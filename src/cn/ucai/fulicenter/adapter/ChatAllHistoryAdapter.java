@@ -25,7 +25,6 @@ import android.widget.TextView.BufferType;
 
 import com.android.volley.toolbox.NetworkImageView;
 import com.easemob.chat.EMConversation;
-import com.easemob.chat.EMConversation.EMConversationType;
 import com.easemob.chat.EMGroup;
 import com.easemob.chat.EMGroupManager;
 import com.easemob.chat.EMMessage;
@@ -93,16 +92,16 @@ public class ChatAllHistoryAdapter extends ArrayAdapter<EMConversation> {
 		EMConversation conversation = getItem(position);
 		// 获取用户username或者群组groupid
 		String username = conversation.getUserName();
-		if (conversation.getType() == EMConversationType.GroupChat) {
-            // 群聊消息，显示群聊头像
-			EMGroup group = EMGroupManager.getInstance().getGroup(username);
-			holder.name.setText(group != null ? group.getGroupName() : username);
-            if(group!=null) {
-                UserUtils.setGroupAvatar(group.getGroupName(), holder.avatar);
-            }else{
-                UserUtils.setGroupAvatar("", holder.avatar);
-            }
-		} else {
+//		if (conversation.getType() == EMConversationType.GroupChat) {
+//            // 群聊消息，显示群聊头像
+//			EMGroup group = EMGroupManager.getInstance().getGroup(username);
+//			holder.name.setText(group != null ? group.getGroupName() : username);
+//            if(group!=null) {
+//                UserUtils.setGroupAvatar(group.getGroupName(), holder.avatar);
+//            }else{
+//                UserUtils.setGroupAvatar("", holder.avatar);
+//            }
+//		} else {
 		    UserUtils.setUserBeanAvatar(username, holder.avatar);
 			if (username.equals(Constant.GROUP_USERNAME)) {
 				holder.name.setText("群聊");
@@ -111,7 +110,7 @@ public class ChatAllHistoryAdapter extends ArrayAdapter<EMConversation> {
 				holder.name.setText("申请与通知");
 			}
 			UserUtils.setUserBeanNick(username, holder.name);
-		}
+//		}
 
 		if (conversation.getUnreadMsgCount() > 0) {
 			// 显示与此用户的消息未读数

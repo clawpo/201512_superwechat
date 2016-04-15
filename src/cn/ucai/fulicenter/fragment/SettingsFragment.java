@@ -368,8 +368,6 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 						instance.getContactList().clear();
 						instance.getUserList().clear();
 						instance.getContacts().clear();
-						instance.getGroupList().clear();
-						instance.getGroupMembers().clear();
 						pd.dismiss();
 						// 重新显示登陆页面
 						((MainActivity) getActivity()).finish();

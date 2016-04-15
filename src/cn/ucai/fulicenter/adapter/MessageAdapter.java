@@ -416,11 +416,11 @@ public class MessageAdapter extends BaseAdapter{
 			holder = (ViewHolder) convertView.getTag();
 		}
 
-		// 群聊时，显示接收的消息的发送人的名称
-		if ((chatType == ChatType.GroupChat || chatType == ChatType.ChatRoom) && message.direct == EMMessage.Direct.RECEIVE){
-		    //demo里使用username代码nick
-            UserUtils.setGroupMemberNick(username,message.getFrom(),holder.tv_usernick);
-		}
+//		// 群聊时，显示接收的消息的发送人的名称
+//		if ((chatType == ChatType.GroupChat || chatType == ChatType.ChatRoom) && message.direct == EMMessage.Direct.RECEIVE){
+//		    //demo里使用username代码nick
+//            UserUtils.setGroupMemberNick(username,message.getFrom(),holder.tv_usernick);
+//		}
 		if(message.direct == EMMessage.Direct.SEND){
             UserUtils.setCurrentUserBeanNick(holder.tv_usernick);
 		}
@@ -575,11 +575,11 @@ public class MessageAdapter extends BaseAdapter{
 	        //显示自己头像
 			UserUtils.setCurrentUserBeanAvatar(imageView);
 	    }else{
-			if(message.getChatType()== ChatType.GroupChat){
-                UserUtils.setGroupMemberAvatar(username,message.getFrom(),imageView);
-			}else {
+//			if(message.getChatType()== ChatType.GroupChat){
+//                UserUtils.setGroupMemberAvatar(username,message.getFrom(),imageView);
+//			}else {
 				UserUtils.setUserBeanAvatar(message.getFrom(), imageView);
-			}
+//			}
 	    }
 	    imageView.setOnClickListener(new View.OnClickListener() {
 			

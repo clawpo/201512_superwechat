@@ -9,15 +9,12 @@ import com.android.volley.toolbox.NetworkImageView;
 import com.easemob.util.HanziToPinyin;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
-
 import cn.ucai.fulicenter.Constant;
 import cn.ucai.fulicenter.DemoHXSDKHelper;
 import cn.ucai.fulicenter.FuLiCenterApplication;
 import cn.ucai.fulicenter.I;
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.applib.controller.HXSDKHelper;
-import cn.ucai.fulicenter.bean.GroupBean;
 import cn.ucai.fulicenter.bean.UserBean;
 import cn.ucai.fulicenter.data.RequestManager;
 import cn.ucai.fulicenter.domain.User;
@@ -48,40 +45,7 @@ public class UserUtils {
         return user;
     }
 
-    public static GroupBean getGroupBeanInfo(String groupName){
-        if(groupName==null){
-            return null;
-        }
-        ArrayList<GroupBean> groupList = FuLiCenterApplication.getInstance().getGroupList();
-        if(groupList!=null){
-            for(GroupBean g : groupList){
-                if(g.getName().equals(groupName)){
-                    return g;
-                }
-            }
-        }
-        return null;
-    }
 
-    public static ArrayList<UserBean> getGroupMembersInfo(String groupId){
-        ArrayList<UserBean> groups= FuLiCenterApplication.getInstance()
-                .getGroupMembers().get(groupId);
-        return groups;
-    }
-
-    public static UserBean getGroupMemberInfo(String groupId, String username){
-        ArrayList<UserBean> members = getGroupMembersInfo(groupId);
-        UserBean user = new UserBean(username);
-        if(members!=null && members.contains(user)){
-            for(UserBean u:members){
-                if(user.getUserName().equals(u.getUserName())){
-                    return u;
-                }
-            }
-        }
-        return null;
-    }
-    
     /**
      * 设置用户头像
      * @param username
@@ -104,10 +68,6 @@ public class UserUtils {
         setUserAvatar(user,imageView);
     }
 
-    public static void setGroupMemberAvatar(String groupId,String username,NetworkImageView imageView){
-        UserBean user = getGroupMemberInfo(groupId,username);
-        setUserAvatar(user,imageView);
-    }
 
     /**
      * 设置用户头像
@@ -143,20 +103,6 @@ public class UserUtils {
         }
     }
 
-    public static void setGroupAvatar(String groupName,NetworkImageView imageView){
-        GroupBean group = getGroupBeanInfo(groupName);
-        setGroupBeanAvatar(group,imageView);
-    }
-
-    public static void setGroupBeanAvatar(GroupBean group,NetworkImageView imageView){
-        imageView.setDefaultImageResId(R.drawable.group_icon);
-        if(group!=null && group.getName()!=null){
-            String path = I.DOWNLOAD_AVATAR_URL + group.getAvatar();
-            imageView.setImageUrl(path,RequestManager.getImageLoader());
-        }else{
-            imageView.setErrorImageResId(R.drawable.group_icon);
-        }
-    }
 
 
     
@@ -184,14 +130,6 @@ public class UserUtils {
         }
     }
 
-    public static void setGroupMemberNick(String groupId,String username,TextView textView){
-        UserBean user = getGroupMemberInfo(groupId,username);
-        if(user!=null){
-            textView.setText(user.getNick());
-        }else{
-            textView.setText(username);
-        }
-    }
 
     /**
      * 设置用户昵称

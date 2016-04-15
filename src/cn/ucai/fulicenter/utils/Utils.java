@@ -3,15 +3,9 @@ package cn.ucai.fulicenter.utils;
 import android.content.Context;
 import android.widget.Toast;
 
-import com.easemob.chat.EMMessage;
-
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-
-import cn.ucai.fulicenter.FuLiCenterApplication;
-import cn.ucai.fulicenter.bean.UserBean;
 
 /**
  * Created by clawpo on 16/3/28.
@@ -52,39 +46,6 @@ public class Utils {
         return array;
     }
 
-    /**
-     * 返回发送消息者，发送消息者可能是群聊中成员或单聊中的好友
-     * @param chatType：群聊/单聊
-     * @param groupId：群聊的groupId或单聊中的登陆者userName
-     * @param userName：发送消息者的userName
-     * @return
-     */
-    public static UserBean getMessageFromUser(EMMessage.ChatType chatType, String groupId, String userName){
-        ArrayList<UserBean> userList = null;
-        switch (chatType) {
-            case GroupChat://群聊
-                HashMap<String,ArrayList<UserBean>> groupMembers = FuLiCenterApplication.getInstance().getGroupMembers();
-                //获取指定groupId的群聊成员集合
-                userList = groupMembers.get(groupId);
-                break;
-            case ChatRoom:
-                break;
-            default://单聊
-                userList = FuLiCenterApplication.getInstance().getContactList();
-                break;
-        }
-        //获取发送消息者
-        UserBean user = new UserBean();
-        user.setUserName(userName);
-        if(userList==null ||userList.isEmpty()){
-            return null;
-        }
-        int id = userList.indexOf(user);
-        if(id>=0){
-            return userList.get(id);
-        }
-        return null;
-    }
     public static int px2dp(Context context,int px){
         int density = (int) context.getResources().getDisplayMetrics().density;
         return px/density;

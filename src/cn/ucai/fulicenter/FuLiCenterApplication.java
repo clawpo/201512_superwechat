@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import cn.ucai.fulicenter.bean.ContactBean;
-import cn.ucai.fulicenter.bean.GroupBean;
 import cn.ucai.fulicenter.bean.UserBean;
 import cn.ucai.fulicenter.data.RequestManager;
 
@@ -140,12 +139,6 @@ public class FuLiCenterApplication extends Application {
 	private HashMap<String,UserBean> userList = new HashMap<String, UserBean>();
 	/**全局的当前登录用户的联系人集合列表*/
 	private HashMap<Integer,ContactBean> contacts = new HashMap<Integer, ContactBean>();
-	/**全局的群组集合*/
-	private ArrayList<GroupBean> groupList = new ArrayList<GroupBean>();
-	/**全局的当前公共群列表*/
-	private ArrayList<GroupBean> publicGroupList = new ArrayList<GroupBean>();
-	/**临时的群组成员列表*/
-	private HashMap<String,ArrayList<UserBean>> groupMembers = new HashMap<String, ArrayList<UserBean>>();
 
 	public UserBean getUser() {
 		return user;
@@ -179,27 +172,4 @@ public class FuLiCenterApplication extends Application {
 		this.contacts = contacts;
 	}
 
-	public ArrayList<GroupBean> getGroupList() {
-		return groupList;
-	}
-
-	public void setGroupList(ArrayList<GroupBean> groupList) {
-		this.groupList = groupList;
-	}
-
-	public ArrayList<GroupBean> getPublicGroupList() {
-		return publicGroupList;
-	}
-
-	public void setPublicGroupList(ArrayList<GroupBean> publicGroupList) {
-		this.publicGroupList = publicGroupList;
-	}
-
-	public HashMap<String, ArrayList<UserBean>> getGroupMembers() {
-		return groupMembers;
-	}
-
-	public void setGroupMembers(HashMap<String, ArrayList<UserBean>> groupMembers) {
-		this.groupMembers = groupMembers;
-	}
 }

@@ -13,8 +13,6 @@
  */
 package cn.ucai.fulicenter.activity;
 
-import java.util.List;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,12 +22,15 @@ import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMChatRoom;
+
+import java.util.List;
+
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.adapter.ChatRoomAdapter;
 
@@ -107,12 +108,6 @@ public class ChatRoomActivity extends BaseActivity {
 		});
 	}
 
-	/**
-	 * 进入公开群聊列表
-	 */
-	public void onPublicGroups(View view) {
-		startActivity(new Intent(this, PublicGroupsActivity.class));
-	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
