@@ -5,12 +5,10 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.animation.AlphaAnimation;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import com.easemob.chat.EMChatManager;
-import com.easemob.chat.EMGroupManager;
 
 import cn.ucai.fulicenter.DemoHXSDKHelper;
 import cn.ucai.fulicenter.FuLiCenterApplication;
@@ -59,36 +57,39 @@ public class SplashActivity extends BaseActivity {
             new DownloadContactTask(mContext,userName,0,20).execute();
             //下载好友列表
             new DownloadContactListTask(mContext,userName,0,20).execute();
-            new Thread(new Runnable() {
-                public void run() {
-                        // ** 免登陆情况 加载所有本地群和会话
-                        //不是必须的，不加sdk也会自动异步去加载(不会重复加载)；
-                        //加上的话保证进了主页面会话和群组都已经load完毕
-                        long start = System.currentTimeMillis();
-                        EMGroupManager.getInstance().loadAllGroups();
-                        EMChatManager.getInstance().loadAllConversations();
-                        long costTime = System.currentTimeMillis() - start;
-                        //等待sleeptime时长
-                        if (sleepTime - costTime > 0) {
-                            try {
-                                Thread.sleep(sleepTime - costTime);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        //进入主页面
-                        startActivity(new Intent(SplashActivity.this, MainActivity.class));
-                        finish();
-                }
-            }).start();
+//            new Thread(new Runnable() {
+//                public void run() {
+//                        // ** 免登陆情况 加载所有本地群和会话
+//                        //不是必须的，不加sdk也会自动异步去加载(不会重复加载)；
+//                        //加上的话保证进了主页面会话和群组都已经load完毕
+//                        long start = System.currentTimeMillis();
+//                        EMGroupManager.getInstance().loadAllGroups();
+//                        EMChatManager.getInstance().loadAllConversations();
+//                        long costTime = System.currentTimeMillis() - start;
+//                        //等待sleeptime时长
+//                        if (sleepTime - costTime > 0) {
+//                            try {
+//                                Thread.sleep(sleepTime - costTime);
+//                            } catch (InterruptedException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                        //进入主页面
+//                        startActivity(new Intent(SplashActivity.this, MainActivity.class));
+//                        finish();
+//                }
+//            }).start();
+			startActivity(new Intent(SplashActivity.this, FuLiCenterMainActivity.class));
+			finish();
         }else {
             try {
                 Thread.sleep(sleepTime);
             } catch (InterruptedException e) {
             }
-            startActivity(new Intent(SplashActivity.this, LoginActivity.class));
-            finish();
         }
+		Log.e("main","go to hell");
+		startActivity(new Intent(SplashActivity.this, FuLiCenterMainActivity.class));
+		finish();
 
 	}
 	

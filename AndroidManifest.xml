@@ -64,6 +64,14 @@
             </intent-filter>
         </activity>
 
+        <activity android:name="cn.ucai.fulicenter.activity.FuLiCenterMainActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/horizontal_slide"
+            android:windowSoftInputMode="adjustPan">
+
+        </activity>
+
         <!-- 登陆 -->
         <activity
             android:name="cn.ucai.fulicenter.activity.LoginActivity"
