@@ -14,6 +14,7 @@ dependencies {
     compile files('libs/jackson-mapper-asl-1.9.11.jar')
     compile files('libs/gson-2.2.4.jar')
     compile files('libs/volley.jar')
+    compile 'com.android.support:recyclerview-v7:23.2.1'
 }
 
 android {
