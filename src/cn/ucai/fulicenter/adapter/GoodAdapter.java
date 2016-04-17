@@ -83,9 +83,9 @@ public class GoodAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             footerHolder.tvFooter.setText(footerText);
             footerHolder.tvFooter.setVisibility(View.VISIBLE);
         }
-        if(position == mGoodList.size()){
-            return;
-        }
+//        if(position == mGoodList.size()){
+//            return;
+//        }
         if(holder instanceof GoodItemViewHolder){
             goodHolder = (GoodItemViewHolder) holder;
             NewGoodBean good = mGoodList.get(position);
@@ -98,12 +98,12 @@ public class GoodAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return mGoodList==null?0:mGoodList.size();
+        return mGoodList==null?1:mGoodList.size()+1;
     }
 
     @Override
     public int getItemViewType(int position) {
-        if(position==getItemCount()){
+        if(position==getItemCount()-1){
             return I.TYPE_FOOTER;
         }else{
             return I.TYPE_ITEM;
