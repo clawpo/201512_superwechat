@@ -71,6 +71,10 @@
             android:windowSoftInputMode="adjustPan">
 
         </activity>
+        <activity android:name="cn.ucai.fulicenter.activity.GoodDetailsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/horizontal_slide" >
+        </activity>
 
         <!-- 登陆 -->
         <activity
@@ -248,14 +252,16 @@
             android:name="cn.ucai.fulicenter.activity.RobotsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/horizontal_slide"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            ></activity>
+            android:windowSoftInputMode="stateAlwaysHidden">
+
+        </activity>
         <!-- user profile -->
 		<activity 
 		    android:name="cn.ucai.fulicenter.activity.UserProfileActivity"
 		    android:screenOrientation="portrait"
-		    android:theme="@style/horizontal_slide"
-		    ></activity>
+		    android:theme="@style/horizontal_slide">
+
+        </activity>
 
         <!-- 开机自启动服务 -->
         <receiver android:name="com.easemob.chat.StartServiceReceiver" >

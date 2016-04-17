@@ -351,4 +351,5 @@
 
     <string name="load_more">加载更多</string>
     <string name="no_more">没有更多数据了</string>
+    <string name="title_good_details">商品详情</string>
 </resources>

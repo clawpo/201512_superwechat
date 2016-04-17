@@ -79,4 +79,7 @@ public class BaseActivity extends FragmentActivity {
             }
         };
     }
+    public <T> T getViewById(int id) {
+        return (T)findViewById(id);
+    }
 }
