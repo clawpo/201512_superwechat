@@ -29,7 +29,9 @@ import cn.ucai.fulicenter.data.RequestManager;
 
 public class FuLiCenterApplication extends Application {
 
-	public static String SERVER_ROOT = "http://10.0.2.2:8080/SuperQQ4Server/Server";
+//	public static String SERVER_ROOT = "http://10.0.2.2:8080/FuLiCenterServer/Server";
+	public static String SERVER_ROOT = "http://139.196.185.33:8080/FuLiCenterServer/Server";
+
 
 	public static Context applicationContext;
 	private static FuLiCenterApplication instance;
@@ -76,7 +78,7 @@ public class FuLiCenterApplication extends Application {
 		String url = sp.getString("url", "");
         Log.e("main","url="+url);
 		if(url!=null && !url.isEmpty()){
-			SERVER_ROOT = url+":8080/SuperQQ4Server/Server";
+			SERVER_ROOT = url+":8080/FuLiCenterServer/Server";
 		}
 		Log.e("main","SERVER_ROOT="+SERVER_ROOT);
 	}

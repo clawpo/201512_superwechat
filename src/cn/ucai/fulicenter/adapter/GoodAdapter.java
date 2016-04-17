@@ -100,6 +100,19 @@ public class GoodAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
+    public void initItems(ArrayList<NewGoodBean> list) {
+        if(mGoodList!=null && !mGoodList.isEmpty()){
+            mGoodList.clear();
+        }
+        mGoodList.addAll(list);
+        notifyDataSetChanged();
+    }
+
+    public void addItems(ArrayList<NewGoodBean> list) {
+        mGoodList.addAll(list);
+        notifyDataSetChanged();
+    }
+
     class GoodItemViewHolder extends ViewHolder{
         LinearLayout layoutGood;
         NetworkImageView nivThumb;

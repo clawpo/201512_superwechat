@@ -7,8 +7,8 @@ public interface I {
 
 
     public static final String AVATAR_PATH = "D:/project/github/SuperWeChat_Database/";
-    public static final String PAGE_ID = "pageId";
-    public static final String PAGE_SIZE = "pageSize";
+    public static final String PAGE_ID = "page_id";
+    public static final String PAGE_SIZE = "page_size";
     /** 上传图片的类型：user_avatar或group_icon */
     public static final String AVATAR_TYPE = "avatarType";
     public static final String FILE_NAME="file_name";
@@ -25,6 +25,9 @@ public interface I {
     public static final int ACTION_PULL_DOWN=1;
     /** 上拉刷新*/
     public static final int ACTION_PULL_UP=2;
+
+    /**新品的cat id*/
+    public final int CAT_ID=0;
 
     /** 每行显示的数量columNum*/
     public static final int COLUM_NUM = 2;

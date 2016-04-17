@@ -1,11 +1,14 @@
 package cn.ucai.fulicenter.activity;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
 import cn.ucai.fulicenter.R;
+import cn.ucai.fulicenter.fragment.NewGoodFragment;
 
 /**
  * Created by clawpo on 16/4/16.
@@ -20,6 +23,9 @@ public class FuLiCenterMainActivity extends BaseActivity {
     RadioButton mLayoutCategory;
     RadioButton mLayoutPersonalCenter;
 
+    NewGoodFragment mNewGoodFragment;
+    Fragment[] mFragments = new Fragment[5];
+
     int index;
     int currentIndex = -1;
     RadioButton[] mRadios = new RadioButton[5];
@@ -29,6 +35,32 @@ public class FuLiCenterMainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fulicenter_main);
         initView();
+        initFragment();
+        // 添加显示第一个fragment
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.fragment_container, mNewGoodFragment)
+//                .add(R.id.fragment_container, contactListFragment)
+//                .hide(contactListFragment)
+                .show(mNewGoodFragment)
+                .commit();
+    }
+
+    private void initFragment() {
+        mNewGoodFragment = new NewGoodFragment();
+        mFragments[0] = mNewGoodFragment;
+    }
+
+    private void initNewGood(){
+        index = 0;
+        currentIndex = 0;
+        FragmentTransaction trx = getSupportFragmentManager().beginTransaction();
+        trx.hide(mFragments[currentIndex]);
+        if (!mFragments[index].isAdded()) {
+            trx.add(R.id.fragment_container, mFragments[index]);
+        }
+        trx.show(mFragments[index]).commit();
+        mLayoutNewGood.setChecked(true);
     }
 
     @Override
