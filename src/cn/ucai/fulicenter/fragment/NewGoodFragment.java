@@ -79,9 +79,7 @@ public class NewGoodFragment extends Fragment {
                 mtvHint.setVisibility(View.GONE);
                 //将数组转换为集合
                 ArrayList<NewGoodBean> list = Utils.array2List(newGoodBeen);
-                Log.e(TAG,"list="+list);
                 if(action == I.ACTION_DOWNLOAD || action == I.ACTION_PULL_DOWN){
-                    Log.e(TAG,"list="+list.size());
                     mAdapter.initItems(list);
                 }else if(action == I.ACTION_PULL_UP) {
                     mAdapter.addItems(list);
@@ -104,7 +102,7 @@ public class NewGoodFragment extends Fragment {
         mRecyclerView = (RecyclerView) layout.findViewById(R.id.rv_newgood);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(mGridLayoutManager);
-        mAdapter = new GoodAdapter(mContext,mGoodList);
+        mAdapter = new GoodAdapter(mContext,mGoodList,I.SORT_BY_ADDTIME_DESC);
         mRecyclerView.setAdapter(mAdapter);
     }
 }

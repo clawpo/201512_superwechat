@@ -37,6 +37,14 @@ public interface I {
     public static final int TYPE_ITEM=0;
     public static final int TYPE_FOOTER=1;
 
+    /**
+     * 商品排序方式
+     */
+    public final int SORT_BY_PRICE_ASC=1;
+    public final int SORT_BY_PRICE_DESC=2;
+    public final int SORT_BY_ADDTIME_ASC=3;
+    public final int SORT_BY_ADDTIME_DESC=4;
+
     /** BeeColud APP ID */
     public static final String BEE_COLUD_APP_ID = "3539b590-4859-4128-87a3-5fb8b86b94f6";
     /** BeeColud APP Secret*/

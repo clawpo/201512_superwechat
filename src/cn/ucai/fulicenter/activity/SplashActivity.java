@@ -5,7 +5,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
-import android.util.Log;
 
 import cn.ucai.fulicenter.DemoHXSDKHelper;
 import cn.ucai.fulicenter.FuLiCenterApplication;
@@ -71,7 +70,6 @@ public class SplashActivity extends BaseActivity {
                 } catch (InterruptedException e) {
                 }
             }
-            Log.e("main","go to hell");
             startActivity(new Intent(SplashActivity.this, FuLiCenterMainActivity.class));
             finish();
             }
