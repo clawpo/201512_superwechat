@@ -18,7 +18,6 @@ import cn.ucai.fulicenter.I;
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.bean.AlbumBean;
 import cn.ucai.fulicenter.bean.GoodDetailsBean;
-import cn.ucai.fulicenter.bean.NewGoodBean;
 import cn.ucai.fulicenter.data.ApiParams;
 import cn.ucai.fulicenter.data.GsonRequest;
 import cn.ucai.fulicenter.utils.ImageUtils;
@@ -32,10 +31,6 @@ public class GoodDetailsActivity extends BaseActivity {
     GoodDetailsActivity mContext;
     GoodDetailsBean mGoodDetails;
     int mGoodsId;
-    /** 用于收藏、支付的商品信息实体*/
-    NewGoodBean mGood;
-    /** 封装了显示商品信息的view*/
-//    ViewHolder mHolder;
 
     SlideAutoLoopView mSlideAutoLoopView;
     FlowIndicator mFlowIndicator;
