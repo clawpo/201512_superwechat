@@ -58,10 +58,11 @@ public class ApiParams extends HashMap<String, String> {
 
 	public String getRequestUrl(String request) throws Exception {
 		StringBuilder url = new StringBuilder(FuLiCenterApplication.SERVER_ROOT);
+		url.append("?" + I.KEY_REQUEST + "=" + request + "&");
 		if (this == null || this.isEmpty()) {
+			url.deleteCharAt(url.length() - 1);
 			return url.toString();
 		}
-		url.append("?" + I.KEY_REQUEST + "=" + request + "&");
 		Set<String> set = this.keySet();
 		for(String key:set){
 			url.append(key)

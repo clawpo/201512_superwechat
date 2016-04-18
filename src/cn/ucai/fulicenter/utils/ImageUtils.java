@@ -76,9 +76,18 @@ public class ImageUtils {
 		String url= FuLiCenterApplication.SERVER_ROOT
 				+"?"+I.KEY_REQUEST+"="+I.REQUEST_DOWNLOAD_COLOR_IMG
 				+"&"+I.Color.COLOR_IMG+"="+colorImg;
-		imageView.setDefaultImageResId(R.drawable.bg_good);
-		imageView.setErrorImageResId(R.drawable.bg_good);
-		imageView.setImageUrl(url,RequestManager.getImageLoader());
+		setThumb(url,imageView);
 	}
+
+    public static void setBoutiqueThumb(String imgUrl,NetworkImageView imageView){
+        String url = I.DOWNLOAD_BOUTIQUE_IMG_URL+imgUrl;
+        setThumb(url,imageView);
+    }
+
+    public static void setThumb(String url,NetworkImageView imageView){
+        imageView.setDefaultImageResId(R.drawable.bg_good);
+        imageView.setErrorImageResId(R.drawable.bg_good);
+        imageView.setImageUrl(url,RequestManager.getImageLoader());
+    }
 	
 }

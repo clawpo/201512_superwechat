@@ -8,6 +8,7 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import cn.ucai.fulicenter.R;
+import cn.ucai.fulicenter.fragment.BoutiqueFragment;
 import cn.ucai.fulicenter.fragment.NewGoodFragment;
 
 /**
@@ -24,10 +25,11 @@ public class FuLiCenterMainActivity extends BaseActivity {
     RadioButton mLayoutPersonalCenter;
 
     NewGoodFragment mNewGoodFragment;
+    BoutiqueFragment mBoutiqueFragment;
     Fragment[] mFragments = new Fragment[5];
 
     int index;
-    int currentIndex = -1;
+    int currentIndex;
     RadioButton[] mRadios = new RadioButton[5];
 
     @Override
@@ -40,27 +42,17 @@ public class FuLiCenterMainActivity extends BaseActivity {
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.fragment_container, mNewGoodFragment)
-//                .add(R.id.fragment_container, contactListFragment)
-//                .hide(contactListFragment)
+                .add(R.id.fragment_container, mBoutiqueFragment)
+                .hide(mBoutiqueFragment)
                 .show(mNewGoodFragment)
                 .commit();
     }
 
     private void initFragment() {
         mNewGoodFragment = new NewGoodFragment();
+        mBoutiqueFragment = new BoutiqueFragment();
         mFragments[0] = mNewGoodFragment;
-    }
-
-    private void initNewGood(){
-        index = 0;
-        currentIndex = 0;
-        FragmentTransaction trx = getSupportFragmentManager().beginTransaction();
-        trx.hide(mFragments[currentIndex]);
-        if (!mFragments[index].isAdded()) {
-            trx.add(R.id.fragment_container, mFragments[index]);
-        }
-        trx.show(mFragments[index]).commit();
-        mLayoutNewGood.setChecked(true);
+        mFragments[1] = mBoutiqueFragment;
     }
 
     @Override
@@ -114,9 +106,15 @@ public class FuLiCenterMainActivity extends BaseActivity {
                 index = 4;
                 break;
         }
-        if(currentIndex!=index){
-            currentIndex = index;
-            setRadioDefaultChecked(index);
+        if (currentIndex != index) {
+            FragmentTransaction trx = getSupportFragmentManager().beginTransaction();
+            trx.hide(mFragments[currentIndex]);
+            if (!mFragments[index].isAdded()) {
+                trx.add(R.id.fragment_container, mFragments[index]);
+            }
+            trx.show(mFragments[index]).commit();
         }
+        setRadioDefaultChecked(index);
+        currentIndex = index;
     }
 }
