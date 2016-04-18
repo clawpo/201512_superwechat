@@ -62,9 +62,6 @@ public class FuLiCenterMainActivity extends BaseActivity {
     }
 
     private void setRadioDefaultChecked(int index) {
-        if(index == -1){
-            index = 0;
-        }
         for(int i = 0; i< mRadios.length; i++){
             if(i==index){
                 mRadios[i].setChecked(true);
