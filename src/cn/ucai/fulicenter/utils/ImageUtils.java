@@ -85,8 +85,8 @@ public class ImageUtils {
     }
 
     public static void setThumb(String url,NetworkImageView imageView){
-        imageView.setDefaultImageResId(R.drawable.bg_good);
-        imageView.setErrorImageResId(R.drawable.bg_good);
+        imageView.setDefaultImageResId(R.drawable.nopic);
+        imageView.setErrorImageResId(R.drawable.nopic);
         imageView.setImageUrl(url,RequestManager.getImageLoader());
     }
 	
