@@ -86,6 +86,11 @@ public class CategoryAdapter extends BaseExpandableListAdapter {
         String imgUrl=group.getImageUrl();
         String url= I.DOWNLOAD_DOWNLOAD_CATEGORY_GROUP_IMAGE_URL+imgUrl;
         ImageUtils.setThumb(url,holder.ivThumb);
+        if(isExpanded){
+            holder.ivIndicator.setImageResource(R.drawable.expand_off);
+        }else{
+            holder.ivIndicator.setImageResource(R.drawable.expand_on);
+        }
         return layout;
     }
 

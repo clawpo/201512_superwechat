@@ -44,50 +44,7 @@ public class CategoryFragment extends Fragment {
         View layout=View.inflate(getActivity(), R.layout.fragment_category, null);
         initView(layout);
         initData();
-        setListener();
         return layout;
-    }
-
-    private void setListener() {
-        setCategoryGroupExpandOnListener();
-        setCategoryGroupExpandOffListener();
-        setCategoryGroupClickListener();
-    }
-
-    /** 设置分类列表项大类被点击的事件监听*/
-    private void setCategoryGroupClickListener() {
-        melvCategory.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
-            @Override
-            public boolean onGroupClick(ExpandableListView parent, View v,
-                                        int groupPosition, long id) {
-                mivGroupIndicator=(ImageView) v.findViewById(R.id.ivIndicator);
-                return false;
-            }
-        });
-    }
-
-    /**
-     * 设置大类列表项收缩事件监听
-     */
-    private void setCategoryGroupExpandOffListener() {
-        melvCategory.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
-            @Override
-            public void onGroupCollapse(int groupPosition) {
-                mivGroupIndicator.setImageResource(R.drawable.expand_on);
-            }
-        });
-    }
-
-    /**
-     * 列表项展开的事件监听
-     */
-    private void setCategoryGroupExpandOnListener() {
-        melvCategory.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-            @Override
-            public void onGroupExpand(int groupPosition) {
-                mivGroupIndicator.setImageResource(R.drawable.expand_off);
-            }
-        });
     }
 
     private void initData() {
@@ -103,6 +60,7 @@ public class CategoryFragment extends Fragment {
         }
     }
 
+    int groupCount=0;
     private Response.Listener<CategoryGroupBean[]> responseDownCategoryListListener() {
         return new Response.Listener<CategoryGroupBean[]>() {
             @Override
@@ -110,13 +68,16 @@ public class CategoryFragment extends Fragment {
                 if(categoryGroupBeen!=null){
                     try {
                         mGroupList = Utils.array2List(categoryGroupBeen);
+                        int i = 0;
                         for (CategoryGroupBean group : mGroupList ) {
+                            mChildList.add(i,new ArrayList<CategoryChildBean>());
                                 String path = new ApiParams().with(I.CategoryChild.PARENT_ID, group.getId() + "")
                                         .with(I.PAGE_ID, "0").with(I.PAGE_SIZE, I.PAGE_SIZE_DEFAULT+"")
                                         .getRequestUrl(I.REQUEST_FIND_CATEGORY_CHILDREN);
                             mContext.executeRequest(new GsonRequest<CategoryChildBean[]>(path,
                                     CategoryChildBean[].class,
-                                    responseDownCategoryChildListListener(),mContext.errorListener()));
+                                    responseDownCategoryChildListListener(i),mContext.errorListener()));
+                            i++;
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -126,17 +87,18 @@ public class CategoryFragment extends Fragment {
         };
     }
 
-    private Response.Listener<CategoryChildBean[]> responseDownCategoryChildListListener() {
+    private Response.Listener<CategoryChildBean[]> responseDownCategoryChildListListener(final int i) {
         return new Response.Listener<CategoryChildBean[]>() {
             @Override
             public void onResponse(CategoryChildBean[] categoryGroupBeen) {
+                groupCount++;
                 if(categoryGroupBeen!=null){
                     ArrayList<CategoryChildBean> childList =Utils.array2List(categoryGroupBeen);
                     if(childList!=null){
-                        mChildList.add(childList);
+                        mChildList.set(i,childList);
                     }
                 }
-                if(mGroupList.size()==mChildList.size()) {
+                if(mGroupList.size()==groupCount) {
                     mAdapter.addItems(mGroupList, mChildList);
                 }
             }
