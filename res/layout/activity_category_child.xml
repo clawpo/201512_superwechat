@@ -3,6 +3,36 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
     <include layout="@layout/common_head_title"/>
+    <LinearLayout
+        android:id="@+id/layout_sort"
+        android:layout_width="match_parent"
+        android:background="@color/main_orange2"
+        android:layout_height="30dp"
+        android:orientation="horizontal" >
+        <Button
+            android:id="@+id/btn_price_sort"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@null"
+            android:padding="5dp"
+            android:drawableRight="@drawable/arrow_order_down"
+            android:text="价格"
+            android:textSize="13sp"
+            android:textColor="#000" />
+
+        <Button
+            android:id="@+id/btn_add_time_sort"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="5dp"
+            android:background="@null"
+            android:drawableRight="@drawable/arrow_order_down"
+            android:text="上架时间"
+            android:textSize="13sp"
+            android:textColor="#000" />
+    </LinearLayout>
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/sfl_category_child"
         android:layout_width="match_parent"
