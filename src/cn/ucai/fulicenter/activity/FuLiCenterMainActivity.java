@@ -44,6 +44,9 @@ public class FuLiCenterMainActivity extends BaseActivity {
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.fragment_container, mNewGoodFragment)
+                .add(R.id.fragment_container, mBoutiqueFragment)
+                .add(R.id.fragment_container,mCategoryFragment)
+                .hide(mBoutiqueFragment).hide(mCategoryFragment)
                 .show(mNewGoodFragment)
                 .commit();
     }
