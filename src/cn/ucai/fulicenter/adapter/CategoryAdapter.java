@@ -126,4 +126,11 @@ public class CategoryAdapter extends BaseExpandableListAdapter {
         NetworkImageView ivThumb;
         TextView tvChildName;
     }
+
+    public void addItems(ArrayList<CategoryGroupBean> groupList,
+                         ArrayList<ArrayList<CategoryChildBean>> childList){
+        this.categoryList.addAll(groupList);
+        this.childList.addAll(childList);
+        notifyDataSetChanged();
+    }
 }

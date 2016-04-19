@@ -27,6 +27,7 @@ import cn.ucai.fulicenter.utils.Utils;
  * Created by clawpo on 16/4/19.
  */
 public class CategoryFragment extends Fragment {
+    public static final String TAG = CategoryFragment.class.getName();
     FuLiCenterMainActivity mContext;
     ArrayList<CategoryGroupBean> mGroupList;
     ArrayList<ArrayList<CategoryChildBean>> mChildList;
@@ -134,6 +135,9 @@ public class CategoryFragment extends Fragment {
                     if(childList!=null){
                         mChildList.add(childList);
                     }
+                }
+                if(mGroupList.size()==mChildList.size()) {
+                    mAdapter.addItems(mGroupList, mChildList);
                 }
             }
         };

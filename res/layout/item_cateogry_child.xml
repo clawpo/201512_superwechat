@@ -14,7 +14,7 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="40dp"
         android:background="#F4F4F4"
-        android:src="@drawable/category_child"/>
+        android:src="@drawable/nopic"/>
     <TextView
         android:id="@+id/tvCategoryChildName"
         android:layout_toRightOf="@id/ivCategoryChildThumb"
