@@ -18,12 +18,14 @@ import cn.ucai.fulicenter.I;
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.adapter.GoodAdapter;
 import cn.ucai.fulicenter.bean.CategoryChildBean;
+import cn.ucai.fulicenter.bean.ColorBean;
 import cn.ucai.fulicenter.bean.NewGoodBean;
 import cn.ucai.fulicenter.data.ApiParams;
 import cn.ucai.fulicenter.data.GsonRequest;
 import cn.ucai.fulicenter.utils.ImageUtils;
 import cn.ucai.fulicenter.utils.Utils;
 import cn.ucai.fulicenter.view.CatChildFilterButton;
+import cn.ucai.fulicenter.view.ColorFilterButton;
 import cn.ucai.fulicenter.view.DisplayUtils;
 
 /**
@@ -63,6 +65,7 @@ public class CategoryChildActivity extends BaseActivity{
 
     CatChildFilterButton mbtnCatFilter;
     ArrayList<CategoryChildBean> mChildList;
+    ColorFilterButton mbtnColorFilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,10 +152,28 @@ public class CategoryChildActivity extends BaseActivity{
             mContext.executeRequest(new GsonRequest<NewGoodBean[]>(path,
                     NewGoodBean[].class,responseDownloadNewGoodListener(),
                     mContext.errorListener()));
+            String colorUrl = new ApiParams().with(I.Color.CAT_ID, ""+catId)
+                    .getRequestUrl(I.REQUEST_FIND_COLOR_LIST);
+            mContext.executeRequest(new GsonRequest<ColorBean[]>(colorUrl,ColorBean[].class,
+                    responseDownloadColorListener(),mContext.errorListener()));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+    private Response.Listener<ColorBean[]> responseDownloadColorListener() {
+        return new Response.Listener<ColorBean[]>() {
+            @Override
+            public void onResponse(ColorBean[] colorBeen) {
+                if(colorBeen!=null){
+                    ArrayList<ColorBean> colorList=Utils.array2List(colorBeen);
+                    mbtnColorFilter.setVisibility(View.VISIBLE);
+                    mbtnColorFilter.setOnColorFilterClickListener(mGroupName,mChildList,colorList);
+                }
+            }
+        };
+    }
+
     private String getPath(int pageId){
         try {
             path = new ApiParams()
@@ -214,6 +235,8 @@ public class CategoryChildActivity extends BaseActivity{
         mbtnAddTimeSort = getViewById(R.id.btn_add_time_sort);
         mbtnCatFilter = getViewById(R.id.btnCatChildFilter);
         mbtnCatFilter.setText(mGroupName);
+        mbtnColorFilter=getViewById(R.id.btnColorFilter);
+        mbtnColorFilter.setVisibility(View.INVISIBLE);
     }
 
     class SortStateChangedListener implements View.OnClickListener {
