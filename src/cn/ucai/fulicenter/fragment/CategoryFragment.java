@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
-import android.widget.ImageView;
 
 import com.android.volley.Response;
 
@@ -34,8 +33,8 @@ public class CategoryFragment extends Fragment {
     ExpandableListView melvCategory;
 
     CategoryAdapter mAdapter;
-    /** 列表项右侧显示展开/收缩的view*/
-    ImageView mivGroupIndicator;
+    /**小类匹配大类的辅助*/
+    int groupCount;
 
     @Nullable
     @Override
@@ -60,7 +59,6 @@ public class CategoryFragment extends Fragment {
         }
     }
 
-    int groupCount=0;
     private Response.Listener<CategoryGroupBean[]> responseDownCategoryListListener() {
         return new Response.Listener<CategoryGroupBean[]>() {
             @Override
