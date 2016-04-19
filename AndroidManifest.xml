@@ -69,14 +69,19 @@
             android:screenOrientation="portrait"
             android:theme="@style/horizontal_slide"
             android:windowSoftInputMode="adjustPan">
-
         </activity>
+        <!--商品详情-->
         <activity android:name="cn.ucai.fulicenter.activity.GoodDetailsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/horizontal_slide" >
         </activity>
-
+        <!--精选二级页面-->
         <activity android:name="cn.ucai.fulicenter.activity.BoutiqueChildActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/horizontal_slide">
+        </activity>
+        <!--分类二级页面-->
+        <activity android:name="cn.ucai.fulicenter.activity.CategoryChildActivity"
             android:screenOrientation="portrait"
             android:theme="@style/horizontal_slide">
         </activity>
