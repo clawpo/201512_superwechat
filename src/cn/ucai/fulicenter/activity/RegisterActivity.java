@@ -36,6 +36,7 @@ import cn.ucai.fulicenter.data.GsonRequest;
 import cn.ucai.fulicenter.listener.OnSetAvatarListener;
 import cn.ucai.fulicenter.utils.NetUtil;
 import cn.ucai.fulicenter.utils.Utils;
+import cn.ucai.fulicenter.view.DisplayUtils;
 
 /**
  * 注册页
@@ -68,7 +69,7 @@ public class RegisterActivity extends BaseActivity {
 	}
 
 	private void setListener() {
-		setLoginClickListener();
+//		setLoginClickListener();
 		setRegisterClickListener();
         setAvatarClickListener();
 	}
@@ -91,14 +92,14 @@ public class RegisterActivity extends BaseActivity {
         mOnSetAvatarListener.setAvatar(requestCode,data,mivAvatar);
     }
 
-    private void setLoginClickListener() {
-		findViewById(R.id.btnLogin).setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-                startActivity(new Intent(RegisterActivity.this,LoginActivity.class));
-			}
-		});
-	}
+//    private void setLoginClickListener() {
+//		findViewById(R.id.btnLogin).setOnClickListener(new View.OnClickListener() {
+//			@Override
+//			public void onClick(View v) {
+//                startActivity(new Intent(RegisterActivity.this,LoginActivity.class));
+//			}
+//		});
+//	}
 
 	private void setRegisterClickListener() {
 		findViewById(R.id.btnRegister).setOnClickListener(new View.OnClickListener() {
@@ -213,6 +214,7 @@ public class RegisterActivity extends BaseActivity {
 		passwordEditText = (EditText) findViewById(R.id.etPassword);
 		confirmPwdEditText = (EditText) findViewById(R.id.etConfirmPassword);
         mivAvatar = (ImageView) findViewById(R.id.iv_avatar);
+		DisplayUtils.initBackWithTitle(mContext,"账户注册");
 	}
 
 	public void back(View view) {

@@ -2,41 +2,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#eff2f6"
-    android:orientation="vertical" 
+    android:background="@color/fragment_bg"
+    android:orientation="vertical"
     android:id="@+id/layout_register">
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp">
-        <TextView
-            android:layout_centerHorizontal="true"
-            android:layout_centerInParent="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/mobile"
-            android:drawablePadding="5dp"
-            android:gravity="center_vertical"
-            android:text="@string/app_name"
-            android:textSize="20sp"
-            android:textColor="#000"/>
-    </RelativeLayout>
+    <include layout="@layout/common_head_title_white"/>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_weight="1.5"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
         android:orientation="vertical" >
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="54dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
             android:background="#fff" >
 
             <EditText
@@ -45,21 +24,18 @@
                 android:layout_height="match_parent"
                 android:layout_centerVertical="true"
                 android:background="@null"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
                 android:drawableRight="@drawable/icon_account"
                 android:hint="@string/user_name"
-                android:paddingLeft="10dip"
-                android:paddingRight="10dip"
                 android:singleLine="true"
                 android:textSize="18sp" />
         </RelativeLayout>
 
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="54dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="1dp"
             android:background="#fff" >
 
             <EditText
@@ -75,13 +51,10 @@
                 android:singleLine="true"
                 android:textSize="18sp" />
         </RelativeLayout>
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="54dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="1dp"
             android:background="#fff" >
 
 
@@ -103,9 +76,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="54dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="1dp"
             android:background="#fff" >
 
             <EditText
@@ -127,9 +98,7 @@
             android:id="@+id/layout_user_avatar"
             android:layout_width="match_parent"
             android:layout_height="54dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="1dp"
             android:background="#fff" >
 
             <ImageView
@@ -162,36 +131,19 @@
             android:layout_marginRight="8dp"
             android:layout_marginTop="20dp"
             android:orientation="horizontal" >
-
             <Button
-                android:id="@+id/btnLogin"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dip"
-                android:layout_marginRight="10dip"
-                android:layout_weight="1"
-                android:background="@drawable/button_register_bg"
-                android:gravity="center"
-                android:paddingBottom="7dp"
-                android:paddingTop="7dp"
-                android:text="@string/login"
-                android:textColor="@android:color/black"
-                android:textSize="18sp" />
-
-            <Button
+                android:layout_weight="2"
                 android:id="@+id/btnRegister"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dip"
-                android:layout_marginRight="10dip"
-                android:layout_weight="2"
-                android:background="@drawable/button_login_bg"
-                android:gravity="center"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:background="@drawable/tb_btn_login_orange_normal"
                 android:paddingBottom="7dp"
                 android:paddingTop="7dp"
                 android:text="@string/register"
                 android:textColor="@android:color/white"
-                android:textSize="18sp" />
+                android:textSize="20sp" />
         </LinearLayout>
     </LinearLayout>
 
