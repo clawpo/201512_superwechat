@@ -5,6 +5,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
+import android.util.Log;
 
 import cn.ucai.fulicenter.DemoHXSDKHelper;
 import cn.ucai.fulicenter.FuLiCenterApplication;
@@ -41,6 +42,8 @@ public class SplashActivity extends BaseActivity {
 			new DownloadContactTask(mContext,userName,0,20).execute();
 			//下载好友列表
 			new DownloadContactListTask(mContext,userName,0,20).execute();
+			Log.e("splash","sendBroadcast........splash.....user");
+			sendStickyBroadcast(new Intent("update_user"));
 		}
         new Thread(new Runnable() {
             public void run() {

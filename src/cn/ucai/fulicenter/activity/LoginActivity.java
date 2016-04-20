@@ -309,6 +309,9 @@ public class LoginActivity extends BaseActivity {
         FuLiCenterApplication.getInstance().setUserName(currentUsername);
         FuLiCenterApplication.getInstance().setPassword(currentPassword);
 
+        Log.e(TAG,"sendBroadcast........login.....user");
+        sendStickyBroadcast(new Intent("update_user"));
+
         try {
             // ** 第一次登录或者之前logout后再登录，加载所有本地群和回话
             // ** manually load all local groups and

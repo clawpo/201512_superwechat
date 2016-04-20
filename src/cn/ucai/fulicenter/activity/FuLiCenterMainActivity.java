@@ -56,9 +56,9 @@ public class FuLiCenterMainActivity extends BaseActivity {
                 .add(R.id.fragment_container, mNewGoodFragment)
                 .add(R.id.fragment_container, mBoutiqueFragment)
                 .add(R.id.fragment_container,mCategoryFragment)
-                .add(R.id.fragment_container,mPersonalCenterFragment)
+//                .add(R.id.fragment_container,mPersonalCenterFragment)
                 .hide(mBoutiqueFragment).hide(mCategoryFragment)
-                .hide(mPersonalCenterFragment)
+//                .hide(mPersonalCenterFragment)
                 .show(mNewGoodFragment)
                 .commit();
         currentUser = FuLiCenterApplication.getInstance().getUser();

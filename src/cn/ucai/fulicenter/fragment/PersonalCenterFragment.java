@@ -1,7 +1,9 @@
 package cn.ucai.fulicenter.fragment;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -23,6 +25,7 @@ import cn.ucai.fulicenter.FuLiCenterApplication;
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.activity.SettingsActivity;
 import cn.ucai.fulicenter.bean.UserBean;
+import cn.ucai.fulicenter.task.DownloadCollectCountTask;
 import cn.ucai.fulicenter.utils.UserUtils;
 
 /**
@@ -34,7 +37,11 @@ public class PersonalCenterFragment extends Fragment {
 
     GridView mOrderList;
     //资源文件
-    private int[] pic_path={R.drawable.order_list1,R.drawable.order_list2,R.drawable.order_list3,R.drawable.order_list4,R.drawable.order_list5};
+    private int[] pic_path={R.drawable.order_list1,
+            R.drawable.order_list2,
+            R.drawable.order_list3,
+            R.drawable.order_list4,
+            R.drawable.order_list5};
 //    OrderAdapter mAdapter;
     NetworkImageView mivUserAvarar;
     TextView mtvUserName;
@@ -47,8 +54,9 @@ public class PersonalCenterFragment extends Fragment {
     int mCollectCount = 0;
     UserBean mUser;
 //    DownloadCollectCountTask mDownloadCollectCountTask;
-//    CollectCountChangedReceiver mReceiver;
+    CollectCountChangedReceiver mReceiver;
 //    UpdateCollectCountChangedReceiver mUpdateReceiver;
+    UpdateUserChangerReceiver mUpdateUserReceiver;
     MyClickListener listener;
 
     @Override
@@ -56,38 +64,35 @@ public class PersonalCenterFragment extends Fragment {
         mContext = getActivity();
         View layout = View.inflate(mContext, R.layout.fragment_personal_center,null);
 
-        checkUser();
+//        checkUser();
         initView(layout);
         initData();
         setListener();
-//        registerCollectCountReceiver();
+        registerCollectCountReceiver();
 //        registerUpdateCollectCountChangedReceiver();
-//        registerUpdateUserChangedReceiver();
+        registerUpdateUserChangedReceiver();
         return layout;
     }
     @Override
     public void onResume() {
         super.onResume();
-        checkUser();
+//        checkUser();
     }
 
     private void initData() {
         mUser = FuLiCenterApplication.getInstance().getUser();
         Log.e(TAG,"initData,mUser="+mUser);
         if(mUser==null)return;
-        Log.e(TAG,"initData,mtvUserName="+mtvUserName);
-        Log.e(TAG,"initData,mUser="+mUser);
-        Log.e(TAG,"initData,mCollectCount="+mCollectCount);
         mtvCollectCount.setText(""+mCollectCount);
         UserUtils.setCurrentUserBeanAvatar(mivUserAvarar);
         UserUtils.setCurrentUserNick(mtvUserName);
 //        mDownloadCollectCountTask = new DownloadCollectCountTask(mContext,mUser.getUserName());
 //        mDownloadCollectCountTask.execute();
     }
-    private void checkUser(){
-        mUser = FuLiCenterApplication.getInstance().getUser();
-        Log.e(TAG,"checkUser,mUser="+mUser);
-    }
+//    private void checkUser(){
+//        mUser = FuLiCenterApplication.getInstance().getUser();
+//        Log.e(TAG,"checkUser,mUser="+mUser);
+//    }
 
     private void setListener() {
         listener = new MyClickListener();
@@ -127,5 +132,53 @@ public class PersonalCenterFragment extends Fragment {
 //        mAdapter = new OrderAdapter(mContext,pic_path);
 //        mOrderList.setAdapter(mAdapter);
         mLyaoutCenterUserInfo = (RelativeLayout) layout.findViewById(R.id.center_user_info);
+    }
+
+
+    private void refresh(){
+        Log.e(TAG,"refresh...............");
+        Log.e(TAG,"initData,mUser="+mUser);
+        Log.e(TAG,"initData,mCollectCount="+mCollectCount);
+        mtvCollectCount.setText(""+mCollectCount);
+        UserUtils.setCurrentUserBeanAvatar(mivUserAvarar);
+        UserUtils.setCurrentUserBeanNick(mtvUserName);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(mReceiver!=null){
+            mContext.unregisterReceiver(mReceiver);
+        }
+    }
+
+    class UpdateUserChangerReceiver extends BroadcastReceiver{
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.e(TAG,"UpdateUserChangerReceiver,user="+FuLiCenterApplication.getInstance().getUser());
+            new DownloadCollectCountTask().execute();
+            refresh();
+        }
+    }
+    private void registerUpdateUserChangedReceiver(){
+        mUpdateUserReceiver = new UpdateUserChangerReceiver();
+        IntentFilter filter = new IntentFilter("update_user");
+        mContext.registerReceiver(mUpdateUserReceiver,filter);
+    }
+
+    class CollectCountChangedReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            mCollectCount = intent.getIntExtra("collect_count",0);
+            Log.e(TAG,"CollectCountChangedReceiver,mCollectCount="+mCollectCount);
+            refresh();
+        }
+    }
+
+    private void registerCollectCountReceiver(){
+        mReceiver = new CollectCountChangedReceiver();
+        IntentFilter filter = new IntentFilter("update_collect_count");
+        mContext.registerReceiver(mReceiver,filter);
     }
 }
