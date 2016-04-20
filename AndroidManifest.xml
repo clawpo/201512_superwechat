@@ -85,6 +85,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/horizontal_slide">
         </activity>
+        <!--设置页面-->
+        <activity android:name="cn.ucai.fulicenter.activity.SettingsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/horizontal_slide">
+        </activity>
         <!-- 登陆 -->
         <activity
             android:name="cn.ucai.fulicenter.activity.LoginActivity"

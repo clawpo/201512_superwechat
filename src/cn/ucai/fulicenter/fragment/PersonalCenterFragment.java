@@ -1,6 +1,7 @@
 package cn.ucai.fulicenter.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import com.android.volley.toolbox.NetworkImageView;
 
 import cn.ucai.fulicenter.FuLiCenterApplication;
 import cn.ucai.fulicenter.R;
+import cn.ucai.fulicenter.activity.SettingsActivity;
 import cn.ucai.fulicenter.bean.UserBean;
 import cn.ucai.fulicenter.utils.UserUtils;
 
@@ -47,7 +49,7 @@ public class PersonalCenterFragment extends Fragment {
 //    DownloadCollectCountTask mDownloadCollectCountTask;
 //    CollectCountChangedReceiver mReceiver;
 //    UpdateCollectCountChangedReceiver mUpdateReceiver;
-//    MyClickListener listener;
+    MyClickListener listener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -57,7 +59,7 @@ public class PersonalCenterFragment extends Fragment {
         checkUser();
         initView(layout);
         initData();
-//        setListener();
+        setListener();
 //        registerCollectCountReceiver();
 //        registerUpdateCollectCountChangedReceiver();
 //        registerUpdateUserChangedReceiver();
@@ -86,6 +88,33 @@ public class PersonalCenterFragment extends Fragment {
         mUser = FuLiCenterApplication.getInstance().getUser();
         Log.e(TAG,"checkUser,mUser="+mUser);
     }
+
+    private void setListener() {
+        listener = new MyClickListener();
+        mLayoutCenterCollet.setOnClickListener(listener);
+        mtvSettings.setOnClickListener(listener);
+        mivMessage.setOnClickListener(listener);
+        mLyaoutCenterUserInfo.setOnClickListener(listener);
+    }
+
+    class MyClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()){
+                case R.id.layout_center_collect:
+//                    startActivity(new Intent(mContext, CollectActivity.class));
+                    break;
+                case R.id.tv_center_settings:
+                case R.id.center_user_info:
+                    startActivity(new Intent(mContext, SettingsActivity.class));
+                    break;
+                case R.id.iv_persona_center_msg:
+//                    startActivity(new Intent(mContext, WeChatActivity.class));
+                    break;
+            }
+        }
+    }
+
     private void initView(View layout) {
         mivUserAvarar = (NetworkImageView) layout.findViewById(R.id.iv_user_avatar);
         mtvUserName = (TextView) layout.findViewById(R.id.tv_user_name);
