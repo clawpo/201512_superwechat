@@ -23,6 +23,7 @@ import com.android.volley.toolbox.NetworkImageView;
 
 import cn.ucai.fulicenter.FuLiCenterApplication;
 import cn.ucai.fulicenter.R;
+import cn.ucai.fulicenter.activity.CollectActivity;
 import cn.ucai.fulicenter.activity.SettingsActivity;
 import cn.ucai.fulicenter.bean.UserBean;
 import cn.ucai.fulicenter.task.DownloadCollectCountTask;
@@ -108,7 +109,7 @@ public class PersonalCenterFragment extends Fragment {
         public void onClick(View v) {
             switch (v.getId()){
                 case R.id.layout_center_collect:
-//                    startActivity(new Intent(mContext, CollectActivity.class));
+                    startActivity(new Intent(mContext, CollectActivity.class));
                     break;
                 case R.id.tv_center_settings:
                 case R.id.center_user_info:

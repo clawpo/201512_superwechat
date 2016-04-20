@@ -90,6 +90,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/horizontal_slide">
         </activity>
+        <activity android:name="cn.ucai.fulicenter.activity.CollectActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/horizontal_slide">
+        </activity>
         <!-- 登陆 -->
         <activity
             android:name="cn.ucai.fulicenter.activity.LoginActivity"

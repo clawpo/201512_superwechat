@@ -54,12 +54,12 @@ public class DownloadCollectCountTask extends BaseActivity {
                     String count = messageBean.getMsg();
                     Log.e(TAG,"responseDownloadCollectCountListener,count = "+count);
                     FuLiCenterApplication.getInstance().setCollectCount(Integer.parseInt(count));
-                    Intent intent = new Intent("update_collect_count");
-                    mContext.sendStickyBroadcast(intent);
                 }else{
                     Log.e(TAG,"responseDownloadCollectCountListener,count = 0");
                     FuLiCenterApplication.getInstance().setCollectCount(0);
                 }
+                Intent intent = new Intent("update_collect_count");
+                mContext.sendStickyBroadcast(intent);
             }
         };
     }
