@@ -82,10 +82,11 @@ public class PersonalCenterFragment extends Fragment {
     private void initData() {
         mUser = FuLiCenterApplication.getInstance().getUser();
         Log.e(TAG,"initData,mUser="+mUser);
-        if(mUser==null)return;
         mtvCollectCount.setText(""+mCollectCount);
-        UserUtils.setCurrentUserBeanAvatar(mivUserAvarar);
-        UserUtils.setCurrentUserNick(mtvUserName);
+        if(FuLiCenterApplication.getInstance().getUser()!=null) {
+            UserUtils.setCurrentUserBeanAvatar(mivUserAvarar);
+            UserUtils.setCurrentUserNick(mtvUserName);
+        }
 //        mDownloadCollectCountTask = new DownloadCollectCountTask(mContext,mUser.getUserName());
 //        mDownloadCollectCountTask.execute();
     }
@@ -140,8 +141,10 @@ public class PersonalCenterFragment extends Fragment {
         Log.e(TAG,"initData,mUser="+mUser);
         Log.e(TAG,"initData,mCollectCount="+mCollectCount);
         mtvCollectCount.setText(""+mCollectCount);
-        UserUtils.setCurrentUserBeanAvatar(mivUserAvarar);
-        UserUtils.setCurrentUserBeanNick(mtvUserName);
+        if(FuLiCenterApplication.getInstance().getUser()!=null) {
+            UserUtils.setCurrentUserBeanAvatar(mivUserAvarar);
+            UserUtils.setCurrentUserBeanNick(mtvUserName);
+        }
     }
 
     @Override
@@ -157,7 +160,7 @@ public class PersonalCenterFragment extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.e(TAG,"UpdateUserChangerReceiver,user="+FuLiCenterApplication.getInstance().getUser());
-            new DownloadCollectCountTask().execute();
+            new DownloadCollectCountTask(mContext).execute();
             refresh();
         }
     }
@@ -170,7 +173,7 @@ public class PersonalCenterFragment extends Fragment {
     class CollectCountChangedReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            mCollectCount = intent.getIntExtra("collect_count",0);
+            mCollectCount = FuLiCenterApplication.getInstance().getCollectCount();
             Log.e(TAG,"CollectCountChangedReceiver,mCollectCount="+mCollectCount);
             refresh();
         }

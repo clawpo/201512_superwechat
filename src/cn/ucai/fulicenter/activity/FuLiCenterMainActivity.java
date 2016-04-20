@@ -164,10 +164,13 @@ public class FuLiCenterMainActivity extends BaseActivity {
     private void setFragment(){
         currentUser = FuLiCenterApplication.getInstance().getUser();
         action = getIntent().getStringExtra("action");
-        Log.e(TAG,"setFragment,action="+action+",user="+currentUser);
+        Log.e(TAG,"setFragment,action="+action+",currentIndex="+currentIndex+",user="+currentUser);
         if(action!=null&&action.equals("person")&& currentUser!=null){
             index = 4;
-            action="";
+            getIntent().removeExtra("action");
+        }
+        if(currentUser==null && currentIndex==4){
+            index=0;
         }
         if (currentIndex != index) {
             FragmentTransaction trx = getSupportFragmentManager().beginTransaction();

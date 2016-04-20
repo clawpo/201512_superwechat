@@ -358,10 +358,12 @@ public class LoginActivity extends BaseActivity {
         if (!LoginActivity.this.isFinishing() && pd.isShowing()) {
             pd.dismiss();
         }
-        // 进入主页面
-        Intent intent = new Intent(LoginActivity.this,
-                FuLiCenterMainActivity.class).putExtra("action",action);
-        startActivity(intent);
+        if(action!=null){
+            // 进入主页面
+            Intent intent = new Intent(LoginActivity.this,
+                    FuLiCenterMainActivity.class).putExtra("action", action);
+            startActivity(intent);
+        }
 
         finish();
     }
@@ -417,6 +419,7 @@ public class LoginActivity extends BaseActivity {
 	protected void onResume() {
 		super.onResume();
         action = getIntent().getStringExtra("action");
+        Log.e(TAG,"resume,action="+action);
 		if (autoLogin) {
 			return;
 		}

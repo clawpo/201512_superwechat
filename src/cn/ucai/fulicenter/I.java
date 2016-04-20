@@ -45,6 +45,12 @@ public interface I {
     public final int SORT_BY_ADDTIME_ASC=3;
     public final int SORT_BY_ADDTIME_DESC=4;
 
+
+    /** 添加收藏*/
+    final static int ACTION_ADD_COLLECT=1;
+    /** 取消收藏*/
+    final static int ACTION_DELETE_COLLECT=2;
+
     /** BeeColud APP ID */
     public static final String BEE_COLUD_APP_ID = "3539b590-4859-4128-87a3-5fb8b86b94f6";
     /** BeeColud APP Secret*/

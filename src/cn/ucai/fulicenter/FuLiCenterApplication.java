@@ -141,6 +141,8 @@ public class FuLiCenterApplication extends Application {
 	private HashMap<String,UserBean> userList = new HashMap<String, UserBean>();
 	/**全局的当前登录用户的联系人集合列表*/
 	private HashMap<Integer,ContactBean> contacts = new HashMap<Integer, ContactBean>();
+    /**全局的当前登录用户的收藏商品数量*/
+    private int collectCount = 0;
 
 	public UserBean getUser() {
 		return user;
@@ -174,4 +176,11 @@ public class FuLiCenterApplication extends Application {
 		this.contacts = contacts;
 	}
 
+    public int getCollectCount() {
+        return collectCount;
+    }
+
+    public void setCollectCount(int collectCount) {
+        this.collectCount = collectCount;
+    }
 }

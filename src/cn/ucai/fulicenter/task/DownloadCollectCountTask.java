@@ -1,5 +1,6 @@
 package cn.ucai.fulicenter.task;
 
+import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
@@ -18,9 +19,11 @@ import cn.ucai.fulicenter.data.GsonRequest;
  */
 public class DownloadCollectCountTask extends BaseActivity {
     public static final String TAG = DownloadCollectCountTask.class.getName();
+    Context mContext;
     String path;
 
-    public DownloadCollectCountTask() {
+    public DownloadCollectCountTask(Context context) {
+        this.mContext = context;
         initPath();
     }
 
@@ -50,8 +53,12 @@ public class DownloadCollectCountTask extends BaseActivity {
                 if(messageBean.isSuccess()){
                     String count = messageBean.getMsg();
                     Log.e(TAG,"responseDownloadCollectCountListener,count = "+count);
-                    Intent intent = new Intent("update_collect_count").putExtra("collect_count",count);
-                    sendStickyBroadcast(intent);
+                    FuLiCenterApplication.getInstance().setCollectCount(Integer.parseInt(count));
+                    Intent intent = new Intent("update_collect_count");
+                    mContext.sendStickyBroadcast(intent);
+                }else{
+                    Log.e(TAG,"responseDownloadCollectCountListener,count = 0");
+                    FuLiCenterApplication.getInstance().setCollectCount(0);
                 }
             }
         };
