@@ -1,6 +1,9 @@
 package cn.ucai.fulicenter.activity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,11 +17,14 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.android.volley.toolbox.NetworkImageView;
 
+import java.util.ArrayList;
+
 import cn.ucai.fulicenter.D;
 import cn.ucai.fulicenter.FuLiCenterApplication;
 import cn.ucai.fulicenter.I;
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.bean.AlbumBean;
+import cn.ucai.fulicenter.bean.CartBean;
 import cn.ucai.fulicenter.bean.GoodDetailsBean;
 import cn.ucai.fulicenter.bean.MessageBean;
 import cn.ucai.fulicenter.bean.UserBean;
@@ -70,6 +76,18 @@ public class GoodDetailsActivity extends BaseActivity {
 
     private void setListener() {
         setCollectClickListener();
+        setAddCartClickListener();
+        registerCartChangedReceiver();
+    }
+
+    private void setAddCartClickListener() {
+        mivAddCart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e(TAG,"mGoodDetails="+mGoodDetails);
+                Utils.addCart(mContext,mGoodDetails);
+            }
+        });
     }
 
     /**
@@ -102,6 +120,7 @@ public class GoodDetailsActivity extends BaseActivity {
                                     .with(I.Collect.GOODS_IMG, mGoodDetails.getGoodsImg())
                                     .with(I.Collect.ADD_TIME, mGoodDetails.getAddTime()+"")
                                     .getRequestUrl(I.REQUEST_ADD_COLLECT);
+                            Log.e(TAG,"path="+path);
                             actionCollect = I.ACTION_ADD_COLLECT;
                         }
                         executeRequest(new GsonRequest<MessageBean>(path,MessageBean.class,
@@ -139,6 +158,7 @@ public class GoodDetailsActivity extends BaseActivity {
         try {
             String path = new ApiParams().with(I.CategoryGood.GOODS_ID, mGoodsId+"")
                     .getRequestUrl(I.REQUEST_FIND_GOOD_DETAILS);
+            Log.e(TAG,"path="+path);
             executeRequest(new GsonRequest<GoodDetailsBean>(path,GoodDetailsBean.class,
                     responseDownloadGoodDetailsListener(),errorListener()));
         } catch (Exception e) {
@@ -171,7 +191,19 @@ public class GoodDetailsActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         initCollectStatus();
+        initCartCount();
     }
+
+    private void initCartCount() {
+        ArrayList<CartBean> cartList = FuLiCenterApplication.getInstance().getCartList();
+        if(cartList!=null&&cartList.size()>0){
+            mtvCartCount.setVisibility(View.VISIBLE);
+            int count=Utils.sumCartCount();
+            Log.e(TAG,"CartChangedReceiver.count="+count);
+            mtvCartCount.setText(""+count);
+        }
+    }
+
     private void initCollectStatus(){
         UserBean user = FuLiCenterApplication.getInstance().getUser();
         Log.e(TAG,"initCollectStatus,user="+user);
@@ -259,5 +291,29 @@ public class GoodDetailsActivity extends BaseActivity {
         WebSettings settings = wvGoodBrief.getSettings();
         settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
         settings.setBuiltInZoomControls(true);
+    }
+    CartChangedReceiver mCartChangedReceiver;
+    /**
+     * 接收来自DownloadCartTask发送的购物车数据改变的广播
+     * @author yao
+     */
+    class CartChangedReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            initCartCount();
+        }
+    }
+    private void registerCartChangedReceiver() {
+        mCartChangedReceiver=new CartChangedReceiver();
+        IntentFilter filter=new IntentFilter("update_cart");
+        registerReceiver(mCartChangedReceiver, filter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(mCartChangedReceiver!=null){
+            unregisterReceiver(mCartChangedReceiver);
+        }
     }
 }

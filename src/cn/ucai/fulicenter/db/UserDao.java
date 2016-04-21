@@ -54,6 +54,7 @@ public class UserDao extends SQLiteOpenHelper {
     }
 
     public UserBean findUserByUserName(String userName){
+        if(userName==null)return null;
         SQLiteDatabase db = getReadableDatabase();
         String sql = "select * from "+ TABLE_NAME + " where " + I.User.USER_NAME  + "=?";
         Cursor c = db.rawQuery(sql,new String []{userName});

@@ -12,6 +12,7 @@ import cn.ucai.fulicenter.FuLiCenterApplication;
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.bean.UserBean;
 import cn.ucai.fulicenter.db.UserDao;
+import cn.ucai.fulicenter.task.DownloadCartListTask;
 import cn.ucai.fulicenter.task.DownloadContactListTask;
 import cn.ucai.fulicenter.task.DownloadContactTask;
 
@@ -42,8 +43,11 @@ public class SplashActivity extends BaseActivity {
 			new DownloadContactTask(mContext,userName,0,20).execute();
 			//下载好友列表
 			new DownloadContactListTask(mContext,userName,0,20).execute();
+			//下载购物车列表
+			new DownloadCartListTask(mContext,userName,0,20).execute();
 			Log.e("splash","sendBroadcast........splash.....user");
 			sendStickyBroadcast(new Intent("update_user"));
+			sendStickyBroadcast(new Intent("update_cart"));
 		}
         new Thread(new Runnable() {
             public void run() {
