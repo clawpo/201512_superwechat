@@ -154,6 +154,9 @@ public class PersonalCenterFragment extends Fragment {
         if(mReceiver!=null){
             mContext.unregisterReceiver(mReceiver);
         }
+        if(mUpdateUserReceiver!=null){
+            mContext.unregisterReceiver(mUpdateUserReceiver);
+        }
     }
 
     class UpdateUserChangerReceiver extends BroadcastReceiver{

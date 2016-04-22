@@ -1,11 +1,13 @@
 package cn.ucai.fulicenter.data;
 
+import android.util.Log;
+
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Set;
 
-import cn.ucai.fulicenter.I;
 import cn.ucai.fulicenter.FuLiCenterApplication;
+import cn.ucai.fulicenter.I;
 
 public class ApiParams extends HashMap<String, String> {
 	private static final long serialVersionUID = 8112047472727256876L;
@@ -71,6 +73,7 @@ public class ApiParams extends HashMap<String, String> {
 					.append("&");
 		}
 		url.deleteCharAt(url.length() - 1);
+		Log.e("api","url="+url);
 		return url.toString();
 	}
 

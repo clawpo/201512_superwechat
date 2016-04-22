@@ -144,7 +144,7 @@ public class FuLiCenterApplication extends Application {
 	private HashMap<Integer,ContactBean> contacts = new HashMap<Integer, ContactBean>();
     /**全局的当前登录用户的收藏商品数量*/
     private int collectCount = 0;
-
+	/**全局的当前登录用户的购物车集合列表*/
     private ArrayList<CartBean> cartList = new ArrayList<CartBean>();
 
 	public UserBean getUser() {

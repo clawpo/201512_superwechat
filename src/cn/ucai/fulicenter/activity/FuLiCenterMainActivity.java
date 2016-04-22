@@ -208,6 +208,7 @@ public class FuLiCenterMainActivity extends BaseActivity {
         public void onReceive(Context context, Intent intent) {
             //统计购物车中的商品件数
             int count= Utils.sumCartCount();
+            Log.e(TAG,"CartChangedReceiver,count = "+count);
             if(count>0){
                 //显示购物车中的商品件数
                 mtvCartHint.setText(""+count);
@@ -221,5 +222,13 @@ public class FuLiCenterMainActivity extends BaseActivity {
         mCartChangedReceiver=new CartChangedReceiver();
         IntentFilter filter=new IntentFilter("update_cart");
         registerReceiver(mCartChangedReceiver, filter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(mCartChangedReceiver!=null){
+            unregisterReceiver(mCartChangedReceiver);
+        }
     }
 }

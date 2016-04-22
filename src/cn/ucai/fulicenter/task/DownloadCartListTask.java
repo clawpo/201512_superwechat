@@ -86,6 +86,8 @@ public class DownloadCartListTask extends BaseActivity {
                                     }, errorListener()));
                             Intent intent = new Intent("update_cart");
                             mContext.sendStickyBroadcast(intent);
+                        }else{
+                            Log.e(TAG,"cart is exists,cart="+c);
                         }
                     }
                 } catch (Exception e) {

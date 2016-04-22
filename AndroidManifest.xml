@@ -39,7 +39,7 @@
 
 
     <application
-        android:name=".FuLiCenterApplication"
+        android:name="cn.ucai.fulicenter.FuLiCenterApplication"
         android:allowBackup="true"
         android:icon="@drawable/logo_uidemo"
         android:hardwareAccelerated="false"

@@ -83,6 +83,8 @@ public class UpdateCartTask extends BaseActivity {
                                                 if(goodDetailsBean!=null){
                                                     mCart.setGoods(goodDetailsBean);
                                                     mCart.setId(Integer.parseInt(messageBean.getMsg()));
+                                                    Intent intent = new Intent("update_cart");
+                                                    mContext.sendStickyBroadcast(intent);
                                                 }
                                             }
                                         }, errorListener()));
