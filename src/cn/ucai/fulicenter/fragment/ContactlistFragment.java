@@ -303,7 +303,7 @@ public class ContactlistFragment extends Fragment {
     @Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
-		if (((AdapterContextMenuInfo) menuInfo).position > 1) {
+		if (((AdapterContextMenuInfo) menuInfo).position > 0) {
 		    toBeProcessUser = adapter.getItem(((AdapterContextMenuInfo) menuInfo).position);
 		    toBeProcessUsername = toBeProcessUser.getUserName();
 			getActivity().getMenuInflater().inflate(R.menu.context_contact_list, menu);
@@ -561,15 +561,15 @@ public class ContactlistFragment extends Fragment {
         ArrayList<UserBean> contactlist = FuLiCenterApplication.getInstance().getContactList();
         mContactList.clear();
         mContactList.addAll(contactlist);
-        // 添加"群聊"
-        UserBean groupUser = new UserBean();
-        String strGroup = getActivity().getString(R.string.group_chat);
-        groupUser.setUserName(Constant.GROUP_USERNAME);
-        groupUser.setNick(strGroup);
-        groupUser.setHeader("");
-        if(mContactList.indexOf(groupUser)==-1){
-            mContactList.add(0, groupUser);
-        }
+//        // 添加"群聊"
+//        UserBean groupUser = new UserBean();
+//        String strGroup = getActivity().getString(R.string.group_chat);
+//        groupUser.setUserName(Constant.GROUP_USERNAME);
+//        groupUser.setNick(strGroup);
+//        groupUser.setHeader("");
+//        if(mContactList.indexOf(groupUser)==-1){
+//            mContactList.add(0, groupUser);
+//        }
         // 添加user"申请与通知"
         UserBean newFriends = new UserBean();
         newFriends.setUserName(Constant.NEW_FRIENDS_USERNAME);

@@ -71,7 +71,6 @@ import cn.ucai.fulicenter.domain.User;
 import cn.ucai.fulicenter.fragment.ChatAllHistoryFragment;
 import cn.ucai.fulicenter.fragment.ContactlistFragment;
 import cn.ucai.fulicenter.utils.Utils;
-import cn.ucai.fulicenter.view.DisplayUtils;
 
 public class MainActivity extends BaseActivity implements EMEventListener {
 
@@ -180,13 +179,13 @@ public class MainActivity extends BaseActivity implements EMEventListener {
                 newFriends.setNick(strChat);
         
                 userlist.put(Constant.NEW_FRIENDS_USERNAME, newFriends);
-                // 添加"群聊"
-                User groupUser = new User();
-                String strGroup = context.getString(R.string.group_chat);
-                groupUser.setUsername(Constant.GROUP_USERNAME);
-                groupUser.setNick(strGroup);
-                groupUser.setHeader("");
-                userlist.put(Constant.GROUP_USERNAME, groupUser);
+//                // 添加"群聊"
+//                User groupUser = new User();
+//                String strGroup = context.getString(R.string.group_chat);
+//                groupUser.setUsername(Constant.GROUP_USERNAME);
+//                groupUser.setNick(strGroup);
+//                groupUser.setHeader("");
+//                userlist.put(Constant.GROUP_USERNAME, groupUser);
 
                  // 存入内存
                 ((DemoHXSDKHelper)HXSDKHelper.getInstance()).setContactList(userlist);
