@@ -89,8 +89,8 @@ public class FuLiCenterMainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        setRadioDefaultChecked(currentIndex);
         setFragment();
+        setRadioDefaultChecked(currentIndex);
     }
 
     private void setRadioDefaultChecked(int index) {
