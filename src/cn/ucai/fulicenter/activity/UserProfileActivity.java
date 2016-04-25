@@ -3,7 +3,6 @@ package cn.ucai.fulicenter.activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -38,6 +37,7 @@ import cn.ucai.fulicenter.bean.UserBean;
 import cn.ucai.fulicenter.domain.User;
 import cn.ucai.fulicenter.utils.UserUtils;
 import cn.ucai.fulicenter.utils.Utils;
+import cn.ucai.fulicenter.view.DisplayUtils;
 
 public class UserProfileActivity extends BaseActivity implements OnClickListener{
     public static final String TAG = UserProfileActivity.class.getName();
@@ -52,7 +52,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 	private ProgressDialog dialog;
 	private RelativeLayout rlNickName;
 	private Button btnAddFirend;
-    Context mContext;
+    UserProfileActivity mContext;
     private String username;
 
 	@Override
@@ -72,6 +72,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 		rlNickName = (RelativeLayout) findViewById(R.id.rl_nickname);
 		iconRightArrow = (ImageView) findViewById(R.id.ic_right_arrow);
         btnAddFirend = (Button) findViewById(R.id.btn_to_chat);
+		DisplayUtils.initBackWithTitle(mContext,getResources().getString(R.string.title_user_profile));
 	}
 	
 	private void initListener() {
