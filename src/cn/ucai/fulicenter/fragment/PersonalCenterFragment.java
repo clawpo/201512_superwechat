@@ -24,6 +24,7 @@ import com.android.volley.toolbox.NetworkImageView;
 import cn.ucai.fulicenter.FuLiCenterApplication;
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.activity.CollectActivity;
+import cn.ucai.fulicenter.activity.MainActivity;
 import cn.ucai.fulicenter.activity.SettingsActivity;
 import cn.ucai.fulicenter.bean.UserBean;
 import cn.ucai.fulicenter.task.DownloadCollectCountTask;
@@ -116,7 +117,7 @@ public class PersonalCenterFragment extends Fragment {
                     startActivity(new Intent(mContext, SettingsActivity.class));
                     break;
                 case R.id.iv_persona_center_msg:
-//                    startActivity(new Intent(mContext, WeChatActivity.class));
+                    startActivity(new Intent(mContext, MainActivity.class));
                     break;
             }
         }

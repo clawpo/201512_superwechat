@@ -330,4 +330,8 @@ public class ChatAllHistoryFragment extends Fragment implements View.OnClickList
         }
         super.onDestroy();
     }
+
+    public void back(View view){
+        getActivity().finish();
+    }
 }

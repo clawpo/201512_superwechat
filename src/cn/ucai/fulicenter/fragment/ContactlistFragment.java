@@ -624,4 +624,7 @@ public class ContactlistFragment extends Fragment {
         getActivity().registerReceiver(mReceiver,filter);
     }
 
+	public void back(View view){
+		getActivity().finish();
+	}
 }
